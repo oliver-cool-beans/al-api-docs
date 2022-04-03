@@ -1,0 +1,589 @@
+asyncapi: '2.3.0'
+
+#
+# Overal information for users of the application
+#
+info:
+  title: Adventure Land - The Code MMORPG Websocket Documentation
+  version: '1.0.0'
+  contact:
+    name: Adventure Land
+    url: http://www.adventure.land/
+  description: |
+    Unofficial Documentation for Adventure Land
+    
+    You can quickly play with the API using [websocat](https://github.com/vi/websocat#installation) like this:
+    ```bash
+    websocat wss://eud1.adventure.land:8443/socket.io/?EIO=4&transport=websocket -S
+    ```
+    
+#
+# Link to external docs
+#
+externalDocs:
+  url: http://adventure.land/docs
+    
+#
+# Details on how to connect to the application
+#
+servers:
+  EU I:
+    url: wss://eud1.adventure.land:2053
+    protocol: wss
+  EU II:
+    url: wss://eud1.adventure.land:2083
+    protocol: wss
+  EU PVP: 
+    url: wss://eud1.adventure.land:2087
+    protocol: wss
+  US I:
+    url: wss://usd1.adventure.land:2053
+    protocol: wss
+  US II:
+    url: wss://usd1.adventure.land:2083
+    protocol: wss
+  US III: 
+    url: wss://usd1.adventure.land:2096
+    protocol: wss
+  US PVP: 
+    url: wss://usd1.adventure.land:2087
+    protocol: wss
+  ASIA PVP: 
+    url: wss://eud1.adventure.land:8443
+    protocol: wss
+#
+# Details about all the channels that you can listen to or send to messages
+#
+channels:
+  /socket.io:
+   subscribe:
+      summary: Receive game events for the current server
+      message:
+        oneOf:
+          - $ref: '#/components/messages/welcome'
+          - $ref: '#/components/messages/entities'
+          - $ref: '#/components/messages/action'
+          - $ref: '#/components/messages/sid'
+          - $ref: '#/components/messages/hit'
+          - $ref: '#/components/messages/ping_ack'
+          - $ref: '#/components/messages/death'
+
+#
+# All reusable parts for readability and staying DRY
+#
+components:
+  messages:
+    welcome:
+      summary: Welcome message sent on a succesful login
+      description: |
+        A message sent after a succesful login, the welcome message contains information about the characters initial login coordinates, map and server
+      payload:
+        type: array
+        items:
+          - 
+            type: string
+            description: The name of the event
+            const: "welcome"
+          -
+            $ref: '#/components/schemas/welcome'
+      examples:
+        - name: welcome
+          summary: Example of a standard welcome message
+          payload:
+            - welcome
+            -
+              gameplay: normal
+              in: "winterland"
+              info: {}
+              map: "winterland"
+              name: "I"
+              pvp: false
+              region: "ASIA"
+              x: 1235
+              y: -737
+    entities:
+      summary: All entities in the current map within X distance
+      payload:
+        type: array
+        items:
+          - 
+            type: string
+            description: The name of the event
+            const: "entities"
+          -
+            $ref: '#/components/schemas/entities'
+      #TODO add example
+    action:
+      summary: An action by a character in the rendered area
+      tags:
+        -
+          name: public
+      payload:
+        type: array
+        items:
+          - 
+            type: string
+            description: The name of the event
+            const: "action"
+          -
+            $ref: '#/components/schemas/action'
+      #TODO add example 
+    sid:
+      summary: A initial message sent when connecting to a server
+      #TODO Fact check this and be more specific
+      payload:
+        type: object
+        properties:
+          pingInterval:
+            type: integer
+            #TODO description
+          pingTimeout:
+            type: integer
+            #TODO description
+          sid:
+            type: string
+            #TODO description
+          upgrades:
+            type: array
+            #TODO description
+            #TODO items
+    hit:
+      summary: An event containing data when an entity is hit
+      tags:
+        -
+          name: public
+      payload:
+        type: array
+        items:
+          - 
+            type: string
+            description: The name of the event
+            const: "hit"
+          -
+            $ref: '#/components/schemas/hit'
+      #TODO add example 
+    ping_ack:
+      summary: A ping acknowledgement from the server
+      payload:
+        type: array
+        items:
+          -
+            type: string
+            description: The name of the event
+            const: "ping_ack"
+          -
+            type: object
+            properties:
+              id: 
+                type: string
+                #TODO description
+      examples:
+        - name: ping_ack
+          summary: Example of a standard ping_ack
+          payload:
+            - ping_ack
+            -
+              id: "L3MpF"
+    death:
+      summary: A death event from the server generated from surrounding entities
+      payload:
+        type: array
+        items:
+          -
+            type: string
+            description: The name of the event
+            const: "death"
+          -
+            type: object
+            properties:
+              id: 
+                type: string
+                description: The ID of the entity that died
+      examples:
+        - name: death
+          summary: Example of a standard death event
+          payload:
+            - death
+            -
+              id: "7250984"
+    #TODO ui
+    #TODO disappearing_text
+  schemas:
+    welcome:
+      type: object
+      properties:
+            gameplay:
+              type: string
+              const: normal
+            info:
+              type: object
+            map: 
+              $ref: '#/components/schemas/maps'
+            name: 
+              $ref: '#/components/schemas/serverIdentifiers'
+            pvp: 
+              type: boolean
+            region:
+              $ref: '#/components/schemas/serverNames'
+            x: 
+              type: integer
+            y: 
+              type: integer
+    mluck:
+        type: object
+        properties:
+          ms:
+            type: number
+            description: The time in milliseconds remaining of the buff
+          f: 
+            type: string
+            description: The player ID who applied the buff
+          strong:
+            type: boolean
+            description: Denotes whether this buff is `strong` meaning it cannot be replaced with an identical buff from another player
+    maps:
+      type: string
+      description: A valid game map
+      enum: ["main", "winterland"]
+    serverIdentifiers:
+      type: string
+      description: A valid server identifier
+      enum: ["I", "II", "III", "pvp"]
+    serverNames:
+      type: string
+      description: A valid server name
+      enum: ["ASIA", "US", "EU"]
+    statTypes:
+      type: string
+      enum: ["int", "str", "dex", "vit"]
+      #TODO add additional enum stat types
+    item:
+      type: object
+      description: A standard item object
+      properties: 
+        name: 
+          type: string
+        level: 
+          type: integer
+        stat_type: 
+          type: string
+          description: The current stat type applied to the item from a scroll
+          $ref: '#/components/schemas/statTypes'
+          optional: true 
+        acc: 
+          type: integer
+          description: The items achievement progress
+        ach:
+          type: string
+          description: The items applied achievement name
+        expires:
+          type: string
+          description: A timestamp that when reached, the item will be deleted
+        gf:
+          type: string
+          description: The character that gifted the item to the player
+        grace:
+          type: integer
+          description: An integer that denotes how likely a player is to success when attempting to upgrade or compound the item. A higher number means a higher change to succeed
+        l:
+          type: string
+          description: Denotes whether the item is (l)ocked, (s)ealed or (u)nlocking
+          enum: [l, s, u]
+        ps:
+          type: array
+          description: An array of applicable titles for this item
+          items:
+            type: string
+    player:
+      type: object
+      description: A standard player object
+      properties:
+        afk: 
+          type: string
+          description: Control method of the player
+          enum: 
+            - code
+            - manual
+        age:
+          type: integer
+          description: Age in days of player
+        angle: 
+          type: number
+          description: Angle of the player
+        armor: 
+          type: integer
+          description: The players armour score
+        attack: 
+          type: integer
+          description: the players attack score
+        c:
+          type: object
+          description: An object containing abilities the player is channeling
+        cid:
+          type: integer
+          #TODO description
+        controller: 
+          type: string
+          #TODO description
+        ctype: 
+          type: string
+          description: The players class type
+          enum: 
+            - mage
+            - warrior
+            - priest
+            - rogue
+            - paladin
+            - archer
+            - merchant
+        cx: 
+          type: object
+          description: An object containing the player applied customisations
+        focus: 
+          type: integer
+          description: The focus target ID of the player
+        frequency: 
+          type: integer
+          description: The players frequency score
+        hp:
+          type: integer
+          description: The players current Health Points
+        id: 
+          type: string
+          description: The players id (Doubles as the player name)
+        level: 
+          type: integer
+          description: The players current level
+        max_hp:
+          type: integer
+          description: The players maximum Health Points
+        max_mp:
+          type: integer
+          description: The players maximum Mana Points
+        mp:
+          type: integer
+          description: The players current Mana Points
+        owner:
+          type: string
+          description: The owner ID of this player
+        party:
+          type: string
+          description: The player ID of the players party leader
+        pdps: 
+          type: number
+          description: The players DPS share whilst in the players current party
+        q: 
+          type: object
+          properties: 
+            compound: 
+              type: object
+              properties:
+                len: 
+                  type: number
+                ms:
+                  type: number
+                num:
+                  type: number
+                nums:
+                  type: array
+                  items: 
+                    type: number
+            upgrade:
+              type: object
+              properties:
+                len: 
+                  type: number
+                ms:
+                  type: number
+                num:
+                  type: number
+            exchange:
+              type: object
+              properties:
+                len: 
+                  type: number
+                ms:
+                  type: number
+                # TODO Need additional variables
+        range: 
+          type: integer
+          description: The players attack range
+        resistance:
+          type: integer
+          description: The players resistance score
+        rip: 
+          type: boolean
+          description: Denotes whether the character is currently dead
+        s:
+          type: object
+          description: An object containing the players applied effects
+          anyOf:
+            - $ref: '#/components/schemas/mluck'
+            #TODO add all effects
+        skin: 
+          type: string
+          description: The ID of the skin applied to the player
+        slots:
+          type: object
+          description: All currently equipped items on the player
+          properties:
+            itemName:
+              type: object
+              $ref: '#/components/schemas/item'
+        speed: 
+          type: integer
+          description: The characters speed score
+        target: 
+          type: string
+          description: The ID of the players current target
+        x: 
+          type: number
+          description: The players x coordinate
+        xp:
+          type: integer
+          description: The players accumulated xp at the current level
+        y:
+          type: number
+          description: The players y coordinate
+    monster:
+      type: object
+      description: A standard monster object
+      properties:
+        abs:
+          type: boolean
+        angle: 
+          type: number
+          description: Angle of the monster
+        armor: 
+          type: integer
+          description: The monsters armour score
+        cid:
+          type: integer
+          #TODO description
+        going_x: 
+          type: number
+          description: The x coordinate on the monsters `map` the monster is currently moving to
+        going_y:
+          type: number
+          description: The y coordinate on the monsters `map` the monster is currently moving to
+          id: 
+            type: string
+            description: The ID of the monster
+          move_num:
+            type: integer
+            #TODO description
+          moving: 
+            type: boolean
+            description: Denotes whether the the monster is moving
+          mp: 
+            type: integer
+            description: The monsters current mana points
+          resistance:
+            type: integer
+            description: The monsters current resistance score
+          s:
+            type: object
+            description: An object containing the monsters applied effects
+            anyOf:
+              - $ref: '#/components/schemas/mluck'
+              #TODO add all effects
+          Type:
+            type: string
+            description: The type of the monster
+          x:
+            type: number
+            description: The current X coordinate of the monster
+          y:
+            type: number
+            description: The current Y coordinate of the monster
+    entities:
+      type: object
+      description: All surrounding entities
+      properties:
+        in: 
+          type: string
+          $ref: '#/components/schemas/maps'
+        map: 
+          type: string
+          $ref: '#/components/schemas/maps' 
+        players: 
+          type: array
+          items: 
+            $ref: '#/components/schemas/player'
+        monsters:
+          type: array
+          items:
+            $ref: '#/components/schemas/monster'
+        type:
+          type: string
+          enum: ["all", "xy"]
+    action:
+      type: object
+      description: A standard action
+      properties:
+        attacker:
+          type: string
+          description: The ID of the player performing the action
+        damage:
+          type: integer
+          description: The amount of damage the action has calculated
+        eta: 
+          type: integer
+          #TODO description
+        m: 
+          type: integer
+          #TODO description
+        pid: 
+          type: string
+          description: The actions unique identifier
+        projectile:
+          type: string
+          description: The type of projectile for this action (if any)
+        source:
+          type: string
+          description: The origin or trigger of this action
+        target:
+          type: string
+          description: the target ID of this action
+        type:
+          type: string
+          description: The type of this action
+        x: 
+          type: number
+          description: The origin X coordinate of this action
+          #TODO Fact check this
+        y:
+          type: number
+          description: The origin Y coordinate of this action
+    hit:
+      type: object
+      description: A standard hit event
+      properties:
+        anim:
+          type: string
+          description: The name of the animation
+        damage: 
+          type: integer
+          description: The damage applied to the target `hid`
+        hid:
+          type: string
+          description: The ID of the entity effected by the hit
+        kill:
+          type: boolean
+          description: Denotes whether this hit killed the target `hid`
+        lifesteal: 
+          type: integer
+          description: Life stolen by this hit
+          #TODO fact check
+        pid:
+          type: string
+          description: The unique identifier of this hit event
+        projectile: 
+          type: string
+          description: The name of the projectile sprite to use for this hit
+        source:
+          type: string
+          description: The source that triggered this hit
+        
+
+      
