@@ -55,9 +55,10 @@ servers:
 # Details about all the channels that you can listen to or send to messages
 #
 channels:
-  /socket.io:
-   subscribe:
-      summary: Receive game events for the current server
+  /:
+    subscribe:
+      summary: | 
+        Game events that can be subscribed to via `socket.on(eventName, (...args) => {})`
       message:
         oneOf:
           - $ref: '#/components/messages/welcome'
@@ -74,18 +75,13 @@ channels:
 components:
   messages:
     welcome:
+      name: welcome
       summary: Welcome message sent on a succesful login
       description: |
         A message sent after a succesful login, the welcome message contains information about the characters initial login coordinates, map and server
       payload:
-        type: array
-        items:
-          - 
-            type: string
-            description: The name of the event
-            const: "welcome"
-          -
-            $ref: '#/components/schemas/welcome'
+        type: object
+        $ref: '#/components/schemas/welcome'
       examples:
         - name: welcome
           summary: Example of a standard welcome message
@@ -102,33 +98,24 @@ components:
               x: 1235
               y: -737
     entities:
+      name: entities
       summary: All entities in the current map within X distance
       payload:
-        type: array
-        items:
-          - 
-            type: string
-            description: The name of the event
-            const: "entities"
-          -
-            $ref: '#/components/schemas/entities'
+        type: object
+        $ref: '#/components/schemas/entities'
       #TODO add example
     action:
+      name: action
       summary: An action by a character in the rendered area
       tags:
         -
           name: public
       payload:
-        type: array
-        items:
-          - 
-            type: string
-            description: The name of the event
-            const: "action"
-          -
-            $ref: '#/components/schemas/action'
+        type: object
+        $ref: '#/components/schemas/action'
       #TODO add example 
     sid:
+      name: sid
       summary: A initial message sent when connecting to a server
       #TODO Fact check this and be more specific
       payload:
@@ -148,35 +135,24 @@ components:
             #TODO description
             #TODO items
     hit:
+      name: hit
       summary: An event containing data when an entity is hit
       tags:
         -
           name: public
       payload:
-        type: array
-        items:
-          - 
-            type: string
-            description: The name of the event
-            const: "hit"
-          -
-            $ref: '#/components/schemas/hit'
+        type: object
+        $ref: '#/components/schemas/hit'
       #TODO add example 
     ping_ack:
+      name: ping_ack
       summary: A ping acknowledgement from the server
       payload:
-        type: array
-        items:
-          -
+        type: object
+        properties:
+          id: 
             type: string
-            description: The name of the event
-            const: "ping_ack"
-          -
-            type: object
-            properties:
-              id: 
-                type: string
-                #TODO description
+            #TODO description
       examples:
         - name: ping_ack
           summary: Example of a standard ping_ack
@@ -185,20 +161,14 @@ components:
             -
               id: "L3MpF"
     death:
+      name: death
       summary: A death event from the server generated from surrounding entities
       payload:
-        type: array
-        items:
-          -
+        type: object
+        properties:
+          id: 
             type: string
-            description: The name of the event
-            const: "death"
-          -
-            type: object
-            properties:
-              id: 
-                type: string
-                description: The ID of the entity that died
+            description: The ID of the entity that died
       examples:
         - name: death
           summary: Example of a standard death event
