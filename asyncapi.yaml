@@ -1,8 +1,5 @@
 asyncapi: '2.2.0'
 
-#
-# Overal information for users of the application
-#
 info:
   title: Adventure Land - The Code MMORPG
   version: "1.0"
@@ -71,6 +68,10 @@ channels:
           - $ref: '#/components/messages/hit'
           - $ref: '#/components/messages/ping_ack'
           - $ref: '#/components/messages/death'
+          - $ref: '#/components/messages/server_info'
+          - $ref: '#/components/messages/disappear'
+          - $ref: '#/components/messages/disappearing_text'
+          - $ref: '#/components/messages/new_map'
 
 #
 # All reusable parts for readability and staying DRY
@@ -160,8 +161,7 @@ components:
         - name: ping_ack
           summary: Example of a standard ping_ack
           payload:
-            - ping_ack
-            -
+              type: object
               id: "L3MpF"
     death:
       name: death
@@ -175,10 +175,37 @@ components:
       examples:
         - name: death
           summary: Example of a standard death event
-          payload:
-            - death
-            -
+          payload: 
+              type: object
               id: "7250984"
+    server_info:
+        name: server_info
+        summary: Information about available events on the server
+        payload:
+          type: object
+          oneOf:
+            - $ref: '#/components/schemas/server_info'
+            - 
+              type: object
+              description: Key value pairs used for server wide events
+              patternProperties:
+                "^S_":
+                  type: boolean
+    disappear:
+      name: dissapear
+      summary: A character has disappeared from the map
+      payload:
+        $ref: '#/components/schemas/disappear'
+    new_map:
+      name: new_map
+      summary: A new map has beeen loaded
+      payload:
+        $ref: '#/components/schemas/new_map'
+    disappearing_text:
+      name: disappearing_text
+      summary: An event that is sent when disappearing text appears above a character
+      payload:
+        $ref: '#/components/schemas/disappearing_text'
     #TODO ui
     #TODO disappearing_text
   schemas:
@@ -217,7 +244,60 @@ components:
     maps:
       type: string
       description: A valid game map
-      enum: ["main", "winterland"]
+      enum: [
+        "winterland",
+        "d_b1",
+        "winter_inn",
+        "mansion",
+        "d2",
+        "batcave",
+        "winter_instance",
+        "resort",
+        "d_a2",
+        "main",
+        "resort_e",
+        "dungeon0",
+        "cgallery",
+        "hut",
+        "d_a1",
+        "bank",
+        "tavern",
+        "ship0",
+        "tunnel",
+        "level2e",
+        "d_g",
+        "d_e",
+        "abtesting",
+        "halloween",
+        "old_bank",
+        "level1",
+        "level2",
+        "level3",
+        "level4",
+        "cyberland",
+        "old_main",
+        "crypt",
+        "cave",
+        "original_main",
+        "duelland",
+        "spookytown",
+        "test",
+        "bank_u",
+        "shellsisland",
+        "goobrawl",
+        "level2s",
+        "level2w",
+        "mtunnel",
+        "level2n",
+        "bank_b",
+        "winter_cave",
+        "arena",
+        "desertland",
+        "winter_inn_rooms",
+        "jail",
+        "tomb",
+        "woffice"
+      ]
     serverIdentifiers:
       type: string
       description: A valid server identifier
@@ -557,6 +637,107 @@ components:
         source:
           type: string
           description: The source that triggered this hit
-        
+    server_info:
+      description: Information about all available events on the server
+      properties:
+        hp: 
+          type: integer
+          description: The event boss's current HP
+        live: 
+          type: boolean
+          description: Denotes whether the event is live
+        map:
+          $ref: '#/components/schemas/maps'
+          description: The map the event is in
+        max_hp: 
+          type: integer
+          description: The event boss's maximum hp
+        x:
+          type: number
+          description: The event boss's X coordinate location on the map
+        y:
+          type: number
+          description: The event boss's Y coordinate location on the map
+        spawn:
+          type: string
+          description: The server time of the next event start time
+    disappear:
+      type: object
+      description: A character has dissapeared
+      properties:
+        id:
+          type: string
+          description: The id of the character that has disappeared
+          optional: true
+        reason: 
+          type: string
+          enum:
+            - transport
+        s:
+          type: integer
+          description: Count of applied effects to the transport
+          #TODO Fact check this? What is this?
+        to:
+          description: The map the character has moved to
+          $ref: '#/components/schemas/maps'
+        effect:
+          type: string
+          enum: 
+            - blink
+          optional: true
+    new_map:
+      type: object
+      description: A new map has been loaded
+      properties:
+        direction:
+          type: integer
+        effect:
+          type: integer
+        entities:
+          $ref: '#/components/schemas/entities'
+        eval:
+          type: string
+        in:
+          description: The new map the character has entered
+          $ref: '#/components/schemas/maps'
+        info:
+          type: object
+        name:
+          type: string
+          description: The new map name
+        m:
+          type: integer
+          #TODO what is this?
+        x:
+          type: integer
+          description: The new X coordinate of the character
+        y:
+          type: integer
+          description: The new Y coordinate of the character
+    disappearing_text:
+      type: object
+      properties:
+        args:
+          type: object
+          properties:
+            c:
+              type: string
+              description: The HEX color value of the text
+            s:
+              type: string
+              description: The disappearing text effect
+        id: 
+          type: string
+          description: The character the disappearing text is applied to
+        message:
+          type: string
+          description: The disappearing text value
+        x:
+          type: number
+          description: The X coordinate the text appears at
+        y:
+          type: number
+          description: The Y coordinate the text appears at
+          
 
       
