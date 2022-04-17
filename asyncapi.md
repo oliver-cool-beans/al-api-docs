@@ -1,4 +1,4 @@
-# Adventure Land - The Code MMORPG 1.0.0 documentation
+# Adventure Land - The Code MMORPG 1.0 documentation
 
 * Support: [Adventure Land](http://www.adventure.land/)
 
@@ -6,9 +6,9 @@
 
 Unofficial Documentation for Adventure Land
 
-You can quickly play with the API using [websocat](https://github.com/vi/websocat#installation) like this:
+You can quickly play with the API using [wscat](https://github.com/websockets/wscat) like this:
 ```bash
-websocat wss://eud1.adventure.land:8443/socket.io/?EIO=4&transport=websocket -S
+wscat -c "wss://eud1.adventure.land:8443/socket.io/?EIO=4&transport=websocket"
 ```
 
 
