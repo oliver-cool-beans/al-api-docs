@@ -109,7 +109,7 @@ A message sent after a succesful login, the welcome message contains information
 | (root) | object | - | - | - | **additional properties are allowed** |
 | gameplay | string | - | const (`"normal"`) | - | - |
 | info | object | - | - | - | **additional properties are allowed** |
-| map | string | A valid game map | allowed (`"winterland"`, `"d_b1"`, `"winter_inn"`, `"mansion"`, `"d2"`, `"batcave"`, `"winter_instance"`, `"resort"`, `"d_a2"`, `"main"`, `"resort_e"`, `"dungeon0"`, `"cgallery"`, `"hut"`, `"d_a1"`, `"bank"`, `"tavern"`, `"ship0"`, `"tunnel"`, `"level2e"`, `"d_g"`, `"d_e"`, `"abtesting"`, `"halloween"`, `"old_bank"`, `"level1"`, `"level2"`, `"level3"`, `"level4"`, `"cyberland"`, `"old_main"`, `"crypt"`, `"cave"`, `"original_main"`, `"duelland"`, `"spookytown"`, `"test"`, `"bank_u"`, `"shellsisland"`, `"goobrawl"`, `"level2s"`, `"level2w"`, `"mtunnel"`, `"level2n"`, `"bank_b"`, `"winter_cave"`, `"arena"`, `"desertland"`, `"winter_inn_rooms"`, `"jail"`, `"tomb"`, `"woffice"`) | - | - |
+| map | string | A valid game map | - | - | - |
 | name | string | A valid server identifier | allowed (`"I"`, `"II"`, `"III"`, `"pvp"`) | - | - |
 | pvp | boolean | - | - | - | - |
 | region | string | A valid server name | allowed (`"ASIA"`, `"US"`, `"EU"`) | - | - |
@@ -149,8 +149,8 @@ Example of a standard welcome message
 | Name | Type | Description | Value | Constraints | Notes |
 |---|---|---|---|---|---|
 | (root) | object | All surrounding entities | - | - | **additional properties are allowed** |
-| in | string | A valid game map | allowed (`"winterland"`, `"d_b1"`, `"winter_inn"`, `"mansion"`, `"d2"`, `"batcave"`, `"winter_instance"`, `"resort"`, `"d_a2"`, `"main"`, `"resort_e"`, `"dungeon0"`, `"cgallery"`, `"hut"`, `"d_a1"`, `"bank"`, `"tavern"`, `"ship0"`, `"tunnel"`, `"level2e"`, `"d_g"`, `"d_e"`, `"abtesting"`, `"halloween"`, `"old_bank"`, `"level1"`, `"level2"`, `"level3"`, `"level4"`, `"cyberland"`, `"old_main"`, `"crypt"`, `"cave"`, `"original_main"`, `"duelland"`, `"spookytown"`, `"test"`, `"bank_u"`, `"shellsisland"`, `"goobrawl"`, `"level2s"`, `"level2w"`, `"mtunnel"`, `"level2n"`, `"bank_b"`, `"winter_cave"`, `"arena"`, `"desertland"`, `"winter_inn_rooms"`, `"jail"`, `"tomb"`, `"woffice"`) | - | - |
-| map | string | A valid game map | allowed (`"winterland"`, `"d_b1"`, `"winter_inn"`, `"mansion"`, `"d2"`, `"batcave"`, `"winter_instance"`, `"resort"`, `"d_a2"`, `"main"`, `"resort_e"`, `"dungeon0"`, `"cgallery"`, `"hut"`, `"d_a1"`, `"bank"`, `"tavern"`, `"ship0"`, `"tunnel"`, `"level2e"`, `"d_g"`, `"d_e"`, `"abtesting"`, `"halloween"`, `"old_bank"`, `"level1"`, `"level2"`, `"level3"`, `"level4"`, `"cyberland"`, `"old_main"`, `"crypt"`, `"cave"`, `"original_main"`, `"duelland"`, `"spookytown"`, `"test"`, `"bank_u"`, `"shellsisland"`, `"goobrawl"`, `"level2s"`, `"level2w"`, `"mtunnel"`, `"level2n"`, `"bank_b"`, `"winter_cave"`, `"arena"`, `"desertland"`, `"winter_inn_rooms"`, `"jail"`, `"tomb"`, `"woffice"`) | - | - |
+| in | string | A valid game map | - | - | - |
+| map | string | A valid game map | - | - | - |
 | players | array<object> | - | - | - | - |
 | players.afk | string | Control method of the player | allowed (`"code"`, `"manual"`) | - | - |
 | players.age | integer | Age in days of player | - | - | - |
@@ -227,8 +227,8 @@ Example of a standard welcome message
 
 ```json
 {
-  "in": "winterland",
-  "map": "winterland",
+  "in": "string",
+  "map": "string",
   "players": [
     {
       "afk": "code",
@@ -492,7 +492,7 @@ Example of a standard death event
 | 0 (oneOf item) | - | Information about all available events on the server | - | - | **additional properties are allowed** |
 | hp | integer | The event boss's current HP | - | - | - |
 | live | boolean | Denotes whether the event is live | - | - | - |
-| map | string | A valid game map | allowed (`"winterland"`, `"d_b1"`, `"winter_inn"`, `"mansion"`, `"d2"`, `"batcave"`, `"winter_instance"`, `"resort"`, `"d_a2"`, `"main"`, `"resort_e"`, `"dungeon0"`, `"cgallery"`, `"hut"`, `"d_a1"`, `"bank"`, `"tavern"`, `"ship0"`, `"tunnel"`, `"level2e"`, `"d_g"`, `"d_e"`, `"abtesting"`, `"halloween"`, `"old_bank"`, `"level1"`, `"level2"`, `"level3"`, `"level4"`, `"cyberland"`, `"old_main"`, `"crypt"`, `"cave"`, `"original_main"`, `"duelland"`, `"spookytown"`, `"test"`, `"bank_u"`, `"shellsisland"`, `"goobrawl"`, `"level2s"`, `"level2w"`, `"mtunnel"`, `"level2n"`, `"bank_b"`, `"winter_cave"`, `"arena"`, `"desertland"`, `"winter_inn_rooms"`, `"jail"`, `"tomb"`, `"woffice"`) | - | - |
+| map | string | A valid game map | - | - | - |
 | max_hp | integer | The event boss's maximum hp | - | - | - |
 | x | number | The event boss's X coordinate location on the map | - | - | - |
 | y | number | The event boss's Y coordinate location on the map | - | - | - |
@@ -506,7 +506,7 @@ Example of a standard death event
 {
   "hp": 0,
   "live": true,
-  "map": "winterland",
+  "map": "string",
   "max_hp": 0,
   "x": 0,
   "y": 0,
@@ -527,7 +527,7 @@ Example of a standard death event
 | id | string | The id of the character that has disappeared | - | - | - |
 | reason | string | - | allowed (`"transport"`) | - | - |
 | s | integer | Count of applied effects to the transport | - | - | - |
-| to | string | A valid game map | allowed (`"winterland"`, `"d_b1"`, `"winter_inn"`, `"mansion"`, `"d2"`, `"batcave"`, `"winter_instance"`, `"resort"`, `"d_a2"`, `"main"`, `"resort_e"`, `"dungeon0"`, `"cgallery"`, `"hut"`, `"d_a1"`, `"bank"`, `"tavern"`, `"ship0"`, `"tunnel"`, `"level2e"`, `"d_g"`, `"d_e"`, `"abtesting"`, `"halloween"`, `"old_bank"`, `"level1"`, `"level2"`, `"level3"`, `"level4"`, `"cyberland"`, `"old_main"`, `"crypt"`, `"cave"`, `"original_main"`, `"duelland"`, `"spookytown"`, `"test"`, `"bank_u"`, `"shellsisland"`, `"goobrawl"`, `"level2s"`, `"level2w"`, `"mtunnel"`, `"level2n"`, `"bank_b"`, `"winter_cave"`, `"arena"`, `"desertland"`, `"winter_inn_rooms"`, `"jail"`, `"tomb"`, `"woffice"`) | - | - |
+| to | string | A valid game map | - | - | - |
 | effect | string | - | allowed (`"blink"`) | - | - |
 
 > Examples of payload _(generated)_
@@ -537,7 +537,7 @@ Example of a standard death event
   "id": "string",
   "reason": "transport",
   "s": 0,
-  "to": "winterland",
+  "to": "string",
   "effect": "blink"
 }
 ```
@@ -588,8 +588,8 @@ Example of a standard death event
 | direction | integer | - | - | - | - |
 | effect | integer | - | - | - | - |
 | entities | object | All surrounding entities | - | - | **additional properties are allowed** |
-| entities.in | string | A valid game map | allowed (`"winterland"`, `"d_b1"`, `"winter_inn"`, `"mansion"`, `"d2"`, `"batcave"`, `"winter_instance"`, `"resort"`, `"d_a2"`, `"main"`, `"resort_e"`, `"dungeon0"`, `"cgallery"`, `"hut"`, `"d_a1"`, `"bank"`, `"tavern"`, `"ship0"`, `"tunnel"`, `"level2e"`, `"d_g"`, `"d_e"`, `"abtesting"`, `"halloween"`, `"old_bank"`, `"level1"`, `"level2"`, `"level3"`, `"level4"`, `"cyberland"`, `"old_main"`, `"crypt"`, `"cave"`, `"original_main"`, `"duelland"`, `"spookytown"`, `"test"`, `"bank_u"`, `"shellsisland"`, `"goobrawl"`, `"level2s"`, `"level2w"`, `"mtunnel"`, `"level2n"`, `"bank_b"`, `"winter_cave"`, `"arena"`, `"desertland"`, `"winter_inn_rooms"`, `"jail"`, `"tomb"`, `"woffice"`) | - | - |
-| entities.map | string | A valid game map | allowed (`"winterland"`, `"d_b1"`, `"winter_inn"`, `"mansion"`, `"d2"`, `"batcave"`, `"winter_instance"`, `"resort"`, `"d_a2"`, `"main"`, `"resort_e"`, `"dungeon0"`, `"cgallery"`, `"hut"`, `"d_a1"`, `"bank"`, `"tavern"`, `"ship0"`, `"tunnel"`, `"level2e"`, `"d_g"`, `"d_e"`, `"abtesting"`, `"halloween"`, `"old_bank"`, `"level1"`, `"level2"`, `"level3"`, `"level4"`, `"cyberland"`, `"old_main"`, `"crypt"`, `"cave"`, `"original_main"`, `"duelland"`, `"spookytown"`, `"test"`, `"bank_u"`, `"shellsisland"`, `"goobrawl"`, `"level2s"`, `"level2w"`, `"mtunnel"`, `"level2n"`, `"bank_b"`, `"winter_cave"`, `"arena"`, `"desertland"`, `"winter_inn_rooms"`, `"jail"`, `"tomb"`, `"woffice"`) | - | - |
+| entities.in | string | A valid game map | - | - | - |
+| entities.map | string | A valid game map | - | - | - |
 | entities.players | array<object> | - | - | - | - |
 | entities.players.afk | string | Control method of the player | allowed (`"code"`, `"manual"`) | - | - |
 | entities.players.age | integer | Age in days of player | - | - | - |
@@ -662,7 +662,7 @@ Example of a standard death event
 | entities.monsters.going_y | number | The y coordinate on the monsters `map` the monster is currently moving to | - | - | - |
 | entities.type | string | - | allowed (`"all"`, `"xy"`) | - | - |
 | eval | string | - | - | - | - |
-| in | string | A valid game map | allowed (`"winterland"`, `"d_b1"`, `"winter_inn"`, `"mansion"`, `"d2"`, `"batcave"`, `"winter_instance"`, `"resort"`, `"d_a2"`, `"main"`, `"resort_e"`, `"dungeon0"`, `"cgallery"`, `"hut"`, `"d_a1"`, `"bank"`, `"tavern"`, `"ship0"`, `"tunnel"`, `"level2e"`, `"d_g"`, `"d_e"`, `"abtesting"`, `"halloween"`, `"old_bank"`, `"level1"`, `"level2"`, `"level3"`, `"level4"`, `"cyberland"`, `"old_main"`, `"crypt"`, `"cave"`, `"original_main"`, `"duelland"`, `"spookytown"`, `"test"`, `"bank_u"`, `"shellsisland"`, `"goobrawl"`, `"level2s"`, `"level2w"`, `"mtunnel"`, `"level2n"`, `"bank_b"`, `"winter_cave"`, `"arena"`, `"desertland"`, `"winter_inn_rooms"`, `"jail"`, `"tomb"`, `"woffice"`) | - | - |
+| in | string | A valid game map | - | - | - |
 | info | object | - | - | - | **additional properties are allowed** |
 | name | string | The new map name | - | - | - |
 | m | integer | - | - | - | - |
@@ -676,8 +676,8 @@ Example of a standard death event
   "direction": 0,
   "effect": 0,
   "entities": {
-    "in": "winterland",
-    "map": "winterland",
+    "in": "string",
+    "map": "string",
     "players": [
       {
         "afk": "code",
@@ -765,7 +765,7 @@ Example of a standard death event
     "type": "all"
   },
   "eval": "string",
-  "in": "winterland",
+  "in": "string",
   "info": {},
   "name": "string",
   "m": 0,
