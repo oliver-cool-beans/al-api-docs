@@ -320,6 +320,7 @@ body.sticky .sidebar-toggle {
   background-color: white;
   box-shadow: 10px 10px 15px -3px rgba(0,0,0,1);
   border-radius: 5px;
+  border: 4px solid gray;
 }
 .markdown-section > * {
   box-sizing: border-box;
@@ -401,6 +402,15 @@ body.sticky .sidebar-toggle {
 .markdown-section ul.task-list > li {
   list-style-type: none;
 }
+
+.app-name {
+    background-color: black;
+    padding: 10px;
+    color: white;
+    width: 85%;
+    border: 4px solid gray;
+}
+
 body.close .sidebar {
   transform: translateX(-300px);
 }
@@ -410,6 +420,7 @@ body.close .sidebar-toggle {
 body.close .content {
   left: 0;
 }
+
 @media print {
   .github-corner,
   .sidebar-toggle,
@@ -601,6 +612,7 @@ section.cover blockquote > p > a:hover {
 }
 body {
     background: url('public/docs.png');
+    animation: fadeIn linear 0.2s;
 }
 /* sidebar */
 .sidebar {
@@ -867,4 +879,10 @@ code .token {
   min-height: 1.5rem;
   position: relative;
   left: auto;
+}
+
+@keyframes fadeIn {
+
+    0% {opacity:0;}
+    100% {opacity:1;}
 }
