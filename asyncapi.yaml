@@ -57,7 +57,7 @@ servers:
 channels:
   /:
     subscribe:
-      summary: | 
+      summary: |
         Game events that can be subscribed to via `socket.on(eventName, (...args) => {})`
       message:
         oneOf:
