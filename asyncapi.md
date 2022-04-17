@@ -515,7 +515,7 @@ Example of a standard death event
 ```
 
 
-#### Message `dissapear`
+#### Message `disappear`
 
 *A character has disappeared from the map*
 
@@ -523,7 +523,7 @@ Example of a standard death event
 
 | Name | Type | Description | Value | Constraints | Notes |
 |---|---|---|---|---|---|
-| (root) | object | A character has dissapeared | - | - | **additional properties are allowed** |
+| (root) | object | A character has disappeared | - | - | **additional properties are allowed** |
 | id | string | The id of the character that has disappeared | - | - | - |
 | reason | string | - | allowed (`"transport"`) | - | - |
 | s | integer | Count of applied effects to the transport | - | - | - |
