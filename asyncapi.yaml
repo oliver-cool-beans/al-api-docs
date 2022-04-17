@@ -192,7 +192,7 @@ components:
                 "^S_":
                   type: boolean
     disappear:
-      name: dissapear
+      name: disappear
       summary: A character has disappeared from the map
       payload:
         $ref: '#/components/schemas/disappear'
@@ -609,7 +609,7 @@ components:
           description: The server time of the next event start time
     disappear:
       type: object
-      description: A character has dissapeared
+      description: A character has disappeared
       properties:
         id:
           type: string
