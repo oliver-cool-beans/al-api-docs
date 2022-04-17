@@ -4,7 +4,7 @@ asyncapi: '2.2.0'
 # Overal information for users of the application
 #
 info:
-  title: Adventure Land - The Code MMORPG Websocket Documentation
+  title: Adventure Land - The Code MMORPG
   version: '1.0.0'
   contact:
     name: Adventure Land
