@@ -109,7 +109,7 @@ A message sent after a succesful login, the welcome message contains information
 | (root) | object | - | - | - | **additional properties are allowed** |
 | gameplay | string | - | const (`"normal"`) | - | - |
 | info | object | - | - | - | **additional properties are allowed** |
-| map | string | A valid game map | allowed (`"main"`, `"winterland"`) | - | - |
+| map | string | A valid game map | allowed (`"winterland"`, `"d_b1"`, `"winter_inn"`, `"mansion"`, `"d2"`, `"batcave"`, `"winter_instance"`, `"resort"`, `"d_a2"`, `"main"`, `"resort_e"`, `"dungeon0"`, `"cgallery"`, `"hut"`, `"d_a1"`, `"bank"`, `"tavern"`, `"ship0"`, `"tunnel"`, `"level2e"`, `"d_g"`, `"d_e"`, `"abtesting"`, `"halloween"`, `"old_bank"`, `"level1"`, `"level2"`, `"level3"`, `"level4"`, `"cyberland"`, `"old_main"`, `"crypt"`, `"cave"`, `"original_main"`, `"duelland"`, `"spookytown"`, `"test"`, `"bank_u"`, `"shellsisland"`, `"goobrawl"`, `"level2s"`, `"level2w"`, `"mtunnel"`, `"level2n"`, `"bank_b"`, `"winter_cave"`, `"arena"`, `"desertland"`, `"winter_inn_rooms"`, `"jail"`, `"tomb"`, `"woffice"`) | - | - |
 | name | string | A valid server identifier | allowed (`"I"`, `"II"`, `"III"`, `"pvp"`) | - | - |
 | pvp | boolean | - | - | - | - |
 | region | string | A valid server name | allowed (`"ASIA"`, `"US"`, `"EU"`) | - | - |
@@ -149,8 +149,8 @@ Example of a standard welcome message
 | Name | Type | Description | Value | Constraints | Notes |
 |---|---|---|---|---|---|
 | (root) | object | All surrounding entities | - | - | **additional properties are allowed** |
-| in | string | A valid game map | allowed (`"main"`, `"winterland"`) | - | - |
-| map | string | A valid game map | allowed (`"main"`, `"winterland"`) | - | - |
+| in | string | A valid game map | allowed (`"winterland"`, `"d_b1"`, `"winter_inn"`, `"mansion"`, `"d2"`, `"batcave"`, `"winter_instance"`, `"resort"`, `"d_a2"`, `"main"`, `"resort_e"`, `"dungeon0"`, `"cgallery"`, `"hut"`, `"d_a1"`, `"bank"`, `"tavern"`, `"ship0"`, `"tunnel"`, `"level2e"`, `"d_g"`, `"d_e"`, `"abtesting"`, `"halloween"`, `"old_bank"`, `"level1"`, `"level2"`, `"level3"`, `"level4"`, `"cyberland"`, `"old_main"`, `"crypt"`, `"cave"`, `"original_main"`, `"duelland"`, `"spookytown"`, `"test"`, `"bank_u"`, `"shellsisland"`, `"goobrawl"`, `"level2s"`, `"level2w"`, `"mtunnel"`, `"level2n"`, `"bank_b"`, `"winter_cave"`, `"arena"`, `"desertland"`, `"winter_inn_rooms"`, `"jail"`, `"tomb"`, `"woffice"`) | - | - |
+| map | string | A valid game map | allowed (`"winterland"`, `"d_b1"`, `"winter_inn"`, `"mansion"`, `"d2"`, `"batcave"`, `"winter_instance"`, `"resort"`, `"d_a2"`, `"main"`, `"resort_e"`, `"dungeon0"`, `"cgallery"`, `"hut"`, `"d_a1"`, `"bank"`, `"tavern"`, `"ship0"`, `"tunnel"`, `"level2e"`, `"d_g"`, `"d_e"`, `"abtesting"`, `"halloween"`, `"old_bank"`, `"level1"`, `"level2"`, `"level3"`, `"level4"`, `"cyberland"`, `"old_main"`, `"crypt"`, `"cave"`, `"original_main"`, `"duelland"`, `"spookytown"`, `"test"`, `"bank_u"`, `"shellsisland"`, `"goobrawl"`, `"level2s"`, `"level2w"`, `"mtunnel"`, `"level2n"`, `"bank_b"`, `"winter_cave"`, `"arena"`, `"desertland"`, `"winter_inn_rooms"`, `"jail"`, `"tomb"`, `"woffice"`) | - | - |
 | players | array<object> | - | - | - | - |
 | players.afk | string | Control method of the player | allowed (`"code"`, `"manual"`) | - | - |
 | players.age | integer | Age in days of player | - | - | - |
@@ -227,8 +227,8 @@ Example of a standard welcome message
 
 ```json
 {
-  "in": "main",
-  "map": "main",
+  "in": "winterland",
+  "map": "winterland",
   "players": [
     {
       "afk": "code",
@@ -448,12 +448,10 @@ _ping_ack_
 Example of a standard ping_ack
 
 ```json
-[
-  "ping_ack",
-  {
-    "id": "L3MpF"
-  }
-]
+{
+  "type": "object",
+  "id": "L3MpF"
+}
 ```
 
 
@@ -475,12 +473,305 @@ _death_
 Example of a standard death event
 
 ```json
-[
-  "death",
-  {
-    "id": "7250984"
-  }
-]
+{
+  "type": "object",
+  "id": "7250984"
+}
+```
+
+
+#### Message `server_info`
+
+*Information about available events on the server*
+
+##### Payload
+
+| Name | Type | Description | Value | Constraints | Notes |
+|---|---|---|---|---|---|
+| (root) | object oneOf | - | - | - | **additional properties are allowed** |
+| 0 (oneOf item) | - | Information about all available events on the server | - | - | **additional properties are allowed** |
+| hp | integer | The event boss's current HP | - | - | - |
+| live | boolean | Denotes whether the event is live | - | - | - |
+| map | string | A valid game map | allowed (`"winterland"`, `"d_b1"`, `"winter_inn"`, `"mansion"`, `"d2"`, `"batcave"`, `"winter_instance"`, `"resort"`, `"d_a2"`, `"main"`, `"resort_e"`, `"dungeon0"`, `"cgallery"`, `"hut"`, `"d_a1"`, `"bank"`, `"tavern"`, `"ship0"`, `"tunnel"`, `"level2e"`, `"d_g"`, `"d_e"`, `"abtesting"`, `"halloween"`, `"old_bank"`, `"level1"`, `"level2"`, `"level3"`, `"level4"`, `"cyberland"`, `"old_main"`, `"crypt"`, `"cave"`, `"original_main"`, `"duelland"`, `"spookytown"`, `"test"`, `"bank_u"`, `"shellsisland"`, `"goobrawl"`, `"level2s"`, `"level2w"`, `"mtunnel"`, `"level2n"`, `"bank_b"`, `"winter_cave"`, `"arena"`, `"desertland"`, `"winter_inn_rooms"`, `"jail"`, `"tomb"`, `"woffice"`) | - | - |
+| max_hp | integer | The event boss's maximum hp | - | - | - |
+| x | number | The event boss's X coordinate location on the map | - | - | - |
+| y | number | The event boss's Y coordinate location on the map | - | - | - |
+| spawn | string | The server time of the next event start time | - | - | - |
+| 1 (oneOf item) | object | Key value pairs used for server wide events | - | - | **additional properties are allowed** |
+| 1.^S_ (pattern property) | boolean | - | - | - | - |
+
+> Examples of payload _(generated)_
+
+```json
+{
+  "hp": 0,
+  "live": true,
+  "map": "winterland",
+  "max_hp": 0,
+  "x": 0,
+  "y": 0,
+  "spawn": "string"
+}
+```
+
+
+#### Message `dissapear`
+
+*A character has disappeared from the map*
+
+##### Payload
+
+| Name | Type | Description | Value | Constraints | Notes |
+|---|---|---|---|---|---|
+| (root) | object | A character has dissapeared | - | - | **additional properties are allowed** |
+| id | string | The id of the character that has disappeared | - | - | - |
+| reason | string | - | allowed (`"transport"`) | - | - |
+| s | integer | Count of applied effects to the transport | - | - | - |
+| to | string | A valid game map | allowed (`"winterland"`, `"d_b1"`, `"winter_inn"`, `"mansion"`, `"d2"`, `"batcave"`, `"winter_instance"`, `"resort"`, `"d_a2"`, `"main"`, `"resort_e"`, `"dungeon0"`, `"cgallery"`, `"hut"`, `"d_a1"`, `"bank"`, `"tavern"`, `"ship0"`, `"tunnel"`, `"level2e"`, `"d_g"`, `"d_e"`, `"abtesting"`, `"halloween"`, `"old_bank"`, `"level1"`, `"level2"`, `"level3"`, `"level4"`, `"cyberland"`, `"old_main"`, `"crypt"`, `"cave"`, `"original_main"`, `"duelland"`, `"spookytown"`, `"test"`, `"bank_u"`, `"shellsisland"`, `"goobrawl"`, `"level2s"`, `"level2w"`, `"mtunnel"`, `"level2n"`, `"bank_b"`, `"winter_cave"`, `"arena"`, `"desertland"`, `"winter_inn_rooms"`, `"jail"`, `"tomb"`, `"woffice"`) | - | - |
+| effect | string | - | allowed (`"blink"`) | - | - |
+
+> Examples of payload _(generated)_
+
+```json
+{
+  "id": "string",
+  "reason": "transport",
+  "s": 0,
+  "to": "winterland",
+  "effect": "blink"
+}
+```
+
+
+#### Message `disappearing_text`
+
+*An event that is sent when disappearing text appears above a character*
+
+##### Payload
+
+| Name | Type | Description | Value | Constraints | Notes |
+|---|---|---|---|---|---|
+| (root) | object | - | - | - | **additional properties are allowed** |
+| args | object | - | - | - | **additional properties are allowed** |
+| args.c | string | The HEX color value of the text | - | - | - |
+| args.s | string | The disappearing text effect | - | - | - |
+| id | string | The character the disappearing text is applied to | - | - | - |
+| message | string | The disappearing text value | - | - | - |
+| x | number | The X coordinate the text appears at | - | - | - |
+| y | number | The Y coordinate the text appears at | - | - | - |
+
+> Examples of payload _(generated)_
+
+```json
+{
+  "args": {
+    "c": "string",
+    "s": "string"
+  },
+  "id": "string",
+  "message": "string",
+  "x": 0,
+  "y": 0
+}
+```
+
+
+#### Message `new_map`
+
+*A new map has beeen loaded*
+
+##### Payload
+
+| Name | Type | Description | Value | Constraints | Notes |
+|---|---|---|---|---|---|
+| (root) | object | A new map has been loaded | - | - | **additional properties are allowed** |
+| direction | integer | - | - | - | - |
+| effect | integer | - | - | - | - |
+| entities | object | All surrounding entities | - | - | **additional properties are allowed** |
+| entities.in | string | A valid game map | allowed (`"winterland"`, `"d_b1"`, `"winter_inn"`, `"mansion"`, `"d2"`, `"batcave"`, `"winter_instance"`, `"resort"`, `"d_a2"`, `"main"`, `"resort_e"`, `"dungeon0"`, `"cgallery"`, `"hut"`, `"d_a1"`, `"bank"`, `"tavern"`, `"ship0"`, `"tunnel"`, `"level2e"`, `"d_g"`, `"d_e"`, `"abtesting"`, `"halloween"`, `"old_bank"`, `"level1"`, `"level2"`, `"level3"`, `"level4"`, `"cyberland"`, `"old_main"`, `"crypt"`, `"cave"`, `"original_main"`, `"duelland"`, `"spookytown"`, `"test"`, `"bank_u"`, `"shellsisland"`, `"goobrawl"`, `"level2s"`, `"level2w"`, `"mtunnel"`, `"level2n"`, `"bank_b"`, `"winter_cave"`, `"arena"`, `"desertland"`, `"winter_inn_rooms"`, `"jail"`, `"tomb"`, `"woffice"`) | - | - |
+| entities.map | string | A valid game map | allowed (`"winterland"`, `"d_b1"`, `"winter_inn"`, `"mansion"`, `"d2"`, `"batcave"`, `"winter_instance"`, `"resort"`, `"d_a2"`, `"main"`, `"resort_e"`, `"dungeon0"`, `"cgallery"`, `"hut"`, `"d_a1"`, `"bank"`, `"tavern"`, `"ship0"`, `"tunnel"`, `"level2e"`, `"d_g"`, `"d_e"`, `"abtesting"`, `"halloween"`, `"old_bank"`, `"level1"`, `"level2"`, `"level3"`, `"level4"`, `"cyberland"`, `"old_main"`, `"crypt"`, `"cave"`, `"original_main"`, `"duelland"`, `"spookytown"`, `"test"`, `"bank_u"`, `"shellsisland"`, `"goobrawl"`, `"level2s"`, `"level2w"`, `"mtunnel"`, `"level2n"`, `"bank_b"`, `"winter_cave"`, `"arena"`, `"desertland"`, `"winter_inn_rooms"`, `"jail"`, `"tomb"`, `"woffice"`) | - | - |
+| entities.players | array<object> | - | - | - | - |
+| entities.players.afk | string | Control method of the player | allowed (`"code"`, `"manual"`) | - | - |
+| entities.players.age | integer | Age in days of player | - | - | - |
+| entities.players.angle | number | Angle of the player | - | - | - |
+| entities.players.armor | integer | The players armour score | - | - | - |
+| entities.players.attack | integer | the players attack score | - | - | - |
+| entities.players.c | object | An object containing abilities the player is channeling | - | - | **additional properties are allowed** |
+| entities.players.cid | integer | - | - | - | - |
+| entities.players.controller | string | - | - | - | - |
+| entities.players.ctype | string | The players class type | allowed (`"mage"`, `"warrior"`, `"priest"`, `"rogue"`, `"paladin"`, `"archer"`, `"merchant"`) | - | - |
+| entities.players.cx | object | An object containing the player applied customisations | - | - | **additional properties are allowed** |
+| entities.players.focus | integer | The focus target ID of the player | - | - | - |
+| entities.players.frequency | integer | The players frequency score | - | - | - |
+| entities.players.hp | integer | The players current Health Points | - | - | - |
+| entities.players.id | string | The players id (Doubles as the player name) | - | - | - |
+| entities.players.level | integer | The players current level | - | - | - |
+| entities.players.max_hp | integer | The players maximum Health Points | - | - | - |
+| entities.players.max_mp | integer | The players maximum Mana Points | - | - | - |
+| entities.players.mp | integer | The players current Mana Points | - | - | - |
+| entities.players.owner | string | The owner ID of this player | - | - | - |
+| entities.players.party | string | The player ID of the players party leader | - | - | - |
+| entities.players.pdps | number | The players DPS share whilst in the players current party | - | - | - |
+| entities.players.q | object | - | - | - | **additional properties are allowed** |
+| entities.players.q.compound | object | - | - | - | **additional properties are allowed** |
+| entities.players.q.compound.len | number | - | - | - | - |
+| entities.players.q.compound.ms | number | - | - | - | - |
+| entities.players.q.compound.num | number | - | - | - | - |
+| entities.players.q.compound.nums | array<number> | - | - | - | - |
+| entities.players.q.compound.nums (single item) | number | - | - | - | - |
+| entities.players.q.upgrade | object | - | - | - | **additional properties are allowed** |
+| entities.players.q.upgrade.len | number | - | - | - | - |
+| entities.players.q.upgrade.ms | number | - | - | - | - |
+| entities.players.q.upgrade.num | number | - | - | - | - |
+| entities.players.q.exchange | object | - | - | - | **additional properties are allowed** |
+| entities.players.q.exchange.len | number | - | - | - | - |
+| entities.players.q.exchange.ms | number | - | - | - | - |
+| entities.players.range | integer | The players attack range | - | - | - |
+| entities.players.resistance | integer | The players resistance score | - | - | - |
+| entities.players.rip | boolean | Denotes whether the character is currently dead | - | - | - |
+| entities.players.s | object anyOf | An object containing the players applied effects | - | - | **additional properties are allowed** |
+| entities.players.s.0 (anyOf item) | object | - | - | - | **additional properties are allowed** |
+| entities.players.s.0.ms | number | The time in milliseconds remaining of the buff | - | - | - |
+| entities.players.s.0.f | string | The player ID who applied the buff | - | - | - |
+| entities.players.s.0.strong | boolean | Denotes whether this buff is `strong` meaning it cannot be replaced with an identical buff from another player | - | - | - |
+| entities.players.skin | string | The ID of the skin applied to the player | - | - | - |
+| entities.players.slots | object | All currently equipped items on the player | - | - | **additional properties are allowed** |
+| entities.players.slots.itemName | object | A standard item object | - | - | **additional properties are allowed** |
+| entities.players.slots.itemName.name | string | - | - | - | - |
+| entities.players.slots.itemName.level | integer | - | - | - | - |
+| entities.players.slots.itemName.stat_type | string | The current stat type applied to the item from a scroll | allowed (`"int"`, `"str"`, `"dex"`, `"vit"`) | - | - |
+| entities.players.slots.itemName.acc | integer | The items achievement progress | - | - | - |
+| entities.players.slots.itemName.ach | string | The items applied achievement name | - | - | - |
+| entities.players.slots.itemName.expires | string | A timestamp that when reached, the item will be deleted | - | - | - |
+| entities.players.slots.itemName.gf | string | The character that gifted the item to the player | - | - | - |
+| entities.players.slots.itemName.grace | integer | An integer that denotes how likely a player is to success when attempting to upgrade or compound the item. A higher number means a higher change to succeed | - | - | - |
+| entities.players.slots.itemName.l | string | Denotes whether the item is (l)ocked, (s)ealed or (u)nlocking | allowed (`"l"`, `"s"`, `"u"`) | - | - |
+| entities.players.slots.itemName.ps | array<string> | An array of applicable titles for this item | - | - | - |
+| entities.players.slots.itemName.ps (single item) | string | - | - | - | - |
+| entities.players.speed | integer | The characters speed score | - | - | - |
+| entities.players.target | string | The ID of the players current target | - | - | - |
+| entities.players.x | number | The players x coordinate | - | - | - |
+| entities.players.xp | integer | The players accumulated xp at the current level | - | - | - |
+| entities.players.y | number | The players y coordinate | - | - | - |
+| entities.monsters | array<object> | - | - | - | - |
+| entities.monsters.abs | boolean | - | - | - | - |
+| entities.monsters.angle | number | Angle of the monster | - | - | - |
+| entities.monsters.armor | integer | The monsters armour score | - | - | - |
+| entities.monsters.cid | integer | - | - | - | - |
+| entities.monsters.going_x | number | The x coordinate on the monsters `map` the monster is currently moving to | - | - | - |
+| entities.monsters.going_y | number | The y coordinate on the monsters `map` the monster is currently moving to | - | - | - |
+| entities.type | string | - | allowed (`"all"`, `"xy"`) | - | - |
+| eval | string | - | - | - | - |
+| in | string | A valid game map | allowed (`"winterland"`, `"d_b1"`, `"winter_inn"`, `"mansion"`, `"d2"`, `"batcave"`, `"winter_instance"`, `"resort"`, `"d_a2"`, `"main"`, `"resort_e"`, `"dungeon0"`, `"cgallery"`, `"hut"`, `"d_a1"`, `"bank"`, `"tavern"`, `"ship0"`, `"tunnel"`, `"level2e"`, `"d_g"`, `"d_e"`, `"abtesting"`, `"halloween"`, `"old_bank"`, `"level1"`, `"level2"`, `"level3"`, `"level4"`, `"cyberland"`, `"old_main"`, `"crypt"`, `"cave"`, `"original_main"`, `"duelland"`, `"spookytown"`, `"test"`, `"bank_u"`, `"shellsisland"`, `"goobrawl"`, `"level2s"`, `"level2w"`, `"mtunnel"`, `"level2n"`, `"bank_b"`, `"winter_cave"`, `"arena"`, `"desertland"`, `"winter_inn_rooms"`, `"jail"`, `"tomb"`, `"woffice"`) | - | - |
+| info | object | - | - | - | **additional properties are allowed** |
+| name | string | The new map name | - | - | - |
+| m | integer | - | - | - | - |
+| x | integer | The new X coordinate of the character | - | - | - |
+| y | integer | The new Y coordinate of the character | - | - | - |
+
+> Examples of payload _(generated)_
+
+```json
+{
+  "direction": 0,
+  "effect": 0,
+  "entities": {
+    "in": "winterland",
+    "map": "winterland",
+    "players": [
+      {
+        "afk": "code",
+        "age": 0,
+        "angle": 0,
+        "armor": 0,
+        "attack": 0,
+        "c": {},
+        "cid": 0,
+        "controller": "string",
+        "ctype": "mage",
+        "cx": {},
+        "focus": 0,
+        "frequency": 0,
+        "hp": 0,
+        "id": "string",
+        "level": 0,
+        "max_hp": 0,
+        "max_mp": 0,
+        "mp": 0,
+        "owner": "string",
+        "party": "string",
+        "pdps": 0,
+        "q": {
+          "compound": {
+            "len": 0,
+            "ms": 0,
+            "num": 0,
+            "nums": [
+              0
+            ]
+          },
+          "upgrade": {
+            "len": 0,
+            "ms": 0,
+            "num": 0
+          },
+          "exchange": {
+            "len": 0,
+            "ms": 0
+          }
+        },
+        "range": 0,
+        "resistance": 0,
+        "rip": true,
+        "s": {
+          "ms": 0,
+          "f": "string",
+          "strong": true
+        },
+        "skin": "string",
+        "slots": {
+          "itemName": {
+            "name": "string",
+            "level": 0,
+            "stat_type": "int",
+            "acc": 0,
+            "ach": "string",
+            "expires": "string",
+            "gf": "string",
+            "grace": 0,
+            "l": "l",
+            "ps": [
+              "string"
+            ]
+          }
+        },
+        "speed": 0,
+        "target": "string",
+        "x": 0,
+        "xp": 0,
+        "y": 0
+      }
+    ],
+    "monsters": [
+      {
+        "abs": true,
+        "angle": 0,
+        "armor": 0,
+        "cid": 0,
+        "going_x": 0,
+        "going_y": 0
+      }
+    ],
+    "type": "all"
+  },
+  "eval": "string",
+  "in": "winterland",
+  "info": {},
+  "name": "string",
+  "m": 0,
+  "x": 0,
+  "y": 0
+}
 ```
 
 
