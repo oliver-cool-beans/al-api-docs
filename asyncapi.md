@@ -5,6 +5,7 @@
 [Find more info here.](http://adventure.land/docs)
 
 Unofficial Documentation for Adventure Land
+Want to contribute? Check out the [Github](https://github.com/oliver-cool-beans/al-api-docs)
 
 You can quickly play with the API using [wscat](https://github.com/websockets/wscat) like this:
 ```bash
