@@ -290,7 +290,7 @@ components:
         type: object
         properties:
           to:
-            $ref: '#components/schemas/maps'
+            $ref: '#/components/schemas/maps'
           s:
             type: integer
             #TODO What is this?
