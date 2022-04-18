@@ -72,12 +72,258 @@ channels:
           - $ref: '#/components/messages/disappear'
           - $ref: '#/components/messages/disappearing_text'
           - $ref: '#/components/messages/new_map'
+          - $ref: '#/components/messages/start'
+          - $ref: '#/components/messages/upgrade'
+          - $ref: '#/components/messages/ui'
+          - $ref: '#/components/messages/lostandfound'
+          - $ref: '#/components/messages/game_response'
+
+
+    publish:
+      summary: |
+        Game messages that can be emitted via `socket.emit(eventName, (...args) => {})`
+      message:
+        oneOf:
+          - $ref: '#/components/messages/exchange_buy'
+          - $ref: '#/components/messages/ping_trig'
+          - $ref: '#/components/messages/transport'
+          - $ref: '#/components/messages/property'
+          - $ref: '#/components/messages/move'
+          - $ref: '#/components/messages/bank'
+          - $ref: '#/components/messages/buy'
+          - $ref: '#/components/messages/target'
+          - $ref: '#/components/messages/lostandfound_info'
+          - $ref: '#/components/messages/sbuy'
+          - $ref: '#/components/messages/loaded'
+          - $ref: '#/components/messages/auth'
+
 
 #
 # All reusable parts for readability and staying DRY
 #
 components:
   messages:
+    game_response:
+      name: game_response
+      summary: Responses to actions performed within the game
+      payload:
+        oneOf:
+          - $ref: '#/components/schemas/game_response_lostandfound_donate'
+          - $ref: '#/components/schemas/game_response_lostandfound_info'
+          #TODO Add more game responses!
+    loaded:
+      name: loaded
+      summary: An event sent when the client has finished loading
+      payload:
+        type: object
+        properties:
+          success:
+            type: integer
+            enum: 
+              - 0
+              - 1
+          width:
+            type: integer
+            description: The resolution width
+          height:
+            type: integer
+            description: The resolution height
+          scale:
+            type: integer
+            description: The game scale
+    auth:
+      name: auth
+      summary: An event sent to authenticate the game session
+      payload:
+        type: object
+        properties:
+          auth:
+            type: string
+            description: The auth secret
+          character:
+            type: string
+            description: The unique character game ID
+          code_slot:
+            type: string
+            description: The unique code_slot game ID
+        height: 
+          type: string
+          description: The resolution height
+        no_graphics:
+          type: string
+          #TODO What is this?
+        no_html:
+          type: string
+          #TODO What is this?
+        passphrase:
+          type: string
+        scale: 
+          type: integer
+          description: The game scale
+        user:
+          type: string
+          description: The unique User ID
+        width:
+          type: string
+          description: The resolution width
+        
+    sbuy:
+      name: sbuy
+      summary: Second hand buy an item
+      payload:
+        type: object
+        properties:
+          rid: 
+            type: string
+            description: The unique identifier of teh item
+          f:
+            type: boolean
+            #TODO What is this?
+    donate:
+      name: donate
+      summary: Donate to the lost and found goblin
+      payload:
+        type: object
+        properties:
+          gold:
+            type: integer
+            description: The amount of gold to donate
+    lostandfound:
+      name: lostandfound
+      summary: An event containing lostandfound items after being requested
+      payload:
+        type: array
+        items:
+          type: object
+          properties:
+            rid: 
+              type: string
+              description: The unique identifier of the item
+            name:
+              type: string
+              description: The item name
+            level:
+              type: integer
+              description: The items level
+              optional: true
+    lostandfound_info:
+      name: lostandfound_info
+      summary: Lost and found (goblin) operations. Provide no payload to request lostandfound items
+      payload:
+        type: string
+        optional: true
+        enum:
+          - info
+    ui:
+      name: ui
+      summary: UI text
+      payload:
+        oneOf:
+          - $ref: '#/components/schemas/ui_vendor'
+          - $ref: '#/components/schemas/ui_mluck'
+          - $ref: '#/components/schemas/ui_gold_sent'
+    target:
+      name: target
+      summary: Target an entity
+      payload:
+        type: object
+        properties:
+          id: 
+            type: string
+            description: A valid entity id
+          xid:
+            type: string
+            description: The id of the player performing the target
+    buy:
+      name: buy
+      summary: Purchase an item
+      payload:
+        type: object
+        properties:
+          name:
+            type: string
+            description: A valid item name
+          quantity:
+            type: integer
+            description: The quantity to purchase
+
+    bank:
+      name: bank
+      summary: Perform operations at the bank
+      payload:
+        $ref: '#/components/schemas/bank'
+    upgrade:
+      name: upgrade
+      summary: Upgrade result message
+      payload:
+        type: object
+        properties:
+          type: 
+            type: string
+            enum: 
+              - upgrade
+              - exchange
+          success:
+            type: integer
+            enum:
+              - 0
+              - 1
+
+    move:
+      name: move
+      summary: Move the player to coordinates
+      payload:
+        $ref: '#/components/schemas/move'
+    property:
+      name: property
+      summary: Set a player property on the server
+      payload:
+        type: object
+        properties:
+          afk: 
+            type: boolean
+            # TODO Are there more properties you can set?
+    transport:
+      name: transport
+      summary: Request a transport to another map
+      payload:
+        type: object
+        properties:
+          to:
+            $ref: '#components/schemas/maps'
+          s:
+            type: integer
+            #TODO What is this?
+
+    ping_trig:
+      name: ping_trig
+      summary: A ping that requests a `ping_ack` response from the server. Can be used to determine latency
+      payload:
+        type: object
+        properties:
+          id:
+            type: string
+            description: A unique identifier used to identify the ping event.
+    exchange_buy:
+      name: exchange_buy
+      summary: Purchase an item using exchangeable items
+      payload:
+        type: object
+        properties:
+          num:
+            type: integer
+            #TODO What is this?
+          name: 
+            type: string
+            description: The name of the item being purchased
+          q:
+            type: integer
+            description: The quantity being purchased
+    start:
+      name: start
+      summary: An inital message upon character login containing player data
+      payload:
+        $ref: '#/components/schemas/player'
     welcome:
       name: welcome
       summary: Welcome message sent on a succesful login
@@ -150,13 +396,13 @@ components:
       #TODO add example 
     ping_ack:
       name: ping_ack
-      summary: A ping acknowledgement from the server
+      summary: A ping acknowledgement from the server, triggered from `ping_trig`
       payload:
         type: object
         properties:
           id: 
             type: string
-            #TODO description
+            description: A unique identifier for the ping specified in the `ping_trig` request
       examples:
         - name: ping_ack
           summary: Example of a standard ping_ack
@@ -684,6 +930,114 @@ components:
         y:
           type: number
           description: The Y coordinate the text appears at
-          
-
-      
+    move:
+      type: object
+      properties:
+        x:
+          type: number
+          description: The origin X coordinate of the move
+        y:
+          type: number
+          description: The origin Y coordinate of the move
+        going_x:
+          type: number
+          description: The destination X coordinate of the move
+        going_y:
+          type: number
+          description: The destination Y coordinate of the move
+        m:
+          type: integer
+          #TODO What is this?
+    bank:
+      type: object
+      properties:
+        operation:
+          type: string
+          enum: 
+            - swap
+          description: The operation being performed at the bank
+        inv:
+          type: integer
+          description: The player inventory slot to swap
+        str:
+          type: integer
+          description: The bank slot to swap
+        pack:
+          $ref: '#/components/schemas/bank_pack'
+    bank_pack:
+      type: string
+      description: A valid bank pack name
+      enum:
+        - items0
+        - items1
+        - items2
+        - items3
+        # TODO More?
+    ui_vendor:
+      type: object
+      description: Sent when something is purchased or sold to a vendor
+      properties:
+        type:
+          type: string
+          const: '+$'
+        id:
+          type: string
+          description: The ID of the player or entity triggering the UI text
+        name:
+          type: string
+          description: The id of the player that triggered the UI Text
+        item:
+          type: object
+          optional: true
+          properties:
+            name:
+              type: string
+              description: The item name
+            q:
+              type: integer
+              description: The quantity of the item
+    ui_gold_sent:
+      type: object
+      description: Sent when gold is sent to a player
+      properties:
+        type:
+          type: string
+          const: gold_sent
+        receiver:
+          type: string
+          description: The player ID of the player receiving the gold
+        sender:
+          type: string
+          description: The player ID of the player sending the gold
+        gold:
+          type: string
+          description: The amount of gold transferred
+    ui_mluck:
+      type: object
+      description: Sent when a player is mlucked
+      properties:
+        from:
+          type: string
+          description: The player ID of the player casting mluck
+        to:
+          type: string
+          description: The payer ID of the player targeted by the mluck cast
+    game_response_lostandfound_donate:
+      type: object
+      description: A resonse returned when lostandfound is requested, but the required donation has not been provided
+      payload:
+        type: string
+        const: lostandfound_donate
+    game_response_lostandfound_info:
+      type: object
+      description: A response returned when lostandfound info is requested
+      payload:
+        type: object
+        properties:
+          response:
+            type: string
+            const: lostandfound_info
+          gold:
+            type: number
+            description: The amount of gold lostandfound has
+            #TODO Fact check this?
