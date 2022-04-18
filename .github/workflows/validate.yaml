@@ -1,0 +1,19 @@
+name: Validate AsyncAPI Document PR
+
+on:
+  pull:
+    branches: [ master ]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+    #"standard step" where repo needs to be checked-out first
+    - name: Checkout repo
+      uses: actions/checkout@v2
+      
+    #Using another action for AsyncAPI for validation
+    - name: Validating AsyncAPI document
+      uses: WaleedAshraf/asyncapi-github-action@v0.0.6
+      with:
+        filepath: asyncapi.yaml
