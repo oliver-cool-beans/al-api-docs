@@ -26,6 +26,7 @@ wscat -c "wss://eud1.adventure.land:8443/socket.io/?EIO=4&transport=websocket"
   * [US PVP](#us-pvp-server)
   * [ASIA PVP](#asia-pvp-server)
 * [Operations](#operations)
+  * [PUB /](#pub--operation)
   * [SUB /](#sub--operation)
 
 ## Servers
@@ -87,6 +88,287 @@ wscat -c "wss://eud1.adventure.land:8443/socket.io/?EIO=4&transport=websocket"
 
 
 ## Operations
+
+### PUB `/` Operation
+
+*Game messages that can be emitted via `socket.emit(eventName, (...args) => {})`
+*
+
+Accepts **one of** the following messages:
+
+#### Message `exchange_buy`
+
+*Purchase an item using exchangeable items*
+
+##### Payload
+
+| Name | Type | Description | Value | Constraints | Notes |
+|---|---|---|---|---|---|
+| (root) | object | - | - | - | **additional properties are allowed** |
+| num | integer | - | - | - | - |
+| name | string | The name of the item being purchased | - | - | - |
+| q | integer | The quantity being purchased | - | - | - |
+
+> Examples of payload _(generated)_
+
+```json
+{
+  "num": 0,
+  "name": "string",
+  "q": 0
+}
+```
+
+
+#### Message `ping_trig`
+
+*A ping that requests a `ping_ack` response from the server. Can be used to determine latency*
+
+##### Payload
+
+| Name | Type | Description | Value | Constraints | Notes |
+|---|---|---|---|---|---|
+| (root) | object | - | - | - | **additional properties are allowed** |
+| id | string | A unique identifier used to identify the ping event. | - | - | - |
+
+> Examples of payload _(generated)_
+
+```json
+{
+  "id": "string"
+}
+```
+
+
+#### Message `transport`
+
+*Request a transport to another map*
+
+##### Payload
+
+| Name | Type | Description | Value | Constraints | Notes |
+|---|---|---|---|---|---|
+| (root) | object | - | - | - | **additional properties are allowed** |
+| to | string | A valid game map | - | - | - |
+| s | integer | - | - | - | - |
+
+> Examples of payload _(generated)_
+
+```json
+{
+  "to": "string",
+  "s": 0
+}
+```
+
+
+#### Message `property`
+
+*Set a player property on the server*
+
+##### Payload
+
+| Name | Type | Description | Value | Constraints | Notes |
+|---|---|---|---|---|---|
+| (root) | object | - | - | - | **additional properties are allowed** |
+| afk | boolean | - | - | - | - |
+
+> Examples of payload _(generated)_
+
+```json
+{
+  "afk": true
+}
+```
+
+
+#### Message `move`
+
+*Move the player to coordinates*
+
+##### Payload
+
+| Name | Type | Description | Value | Constraints | Notes |
+|---|---|---|---|---|---|
+| (root) | object | - | - | - | **additional properties are allowed** |
+| x | number | The origin X coordinate of the move | - | - | - |
+| y | number | The origin Y coordinate of the move | - | - | - |
+| going_x | number | The destination X coordinate of the move | - | - | - |
+| going_y | number | The destination Y coordinate of the move | - | - | - |
+| m | integer | - | - | - | - |
+
+> Examples of payload _(generated)_
+
+```json
+{
+  "x": 0,
+  "y": 0,
+  "going_x": 0,
+  "going_y": 0,
+  "m": 0
+}
+```
+
+
+#### Message `bank`
+
+*Perform operations at the bank*
+
+##### Payload
+
+| Name | Type | Description | Value | Constraints | Notes |
+|---|---|---|---|---|---|
+| (root) | object | - | - | - | **additional properties are allowed** |
+| operation | string | The operation being performed at the bank | allowed (`"swap"`) | - | - |
+| inv | integer | The player inventory slot to swap | - | - | - |
+| str | integer | The bank slot to swap | - | - | - |
+| pack | string | A valid bank pack name | allowed (`"items0"`, `"items1"`, `"items2"`, `"items3"`) | - | - |
+
+> Examples of payload _(generated)_
+
+```json
+{
+  "operation": "swap",
+  "inv": 0,
+  "str": 0,
+  "pack": "items0"
+}
+```
+
+
+#### Message `buy`
+
+*Purchase an item*
+
+##### Payload
+
+| Name | Type | Description | Value | Constraints | Notes |
+|---|---|---|---|---|---|
+| (root) | object | - | - | - | **additional properties are allowed** |
+| name | string | A valid item name | - | - | - |
+| quantity | integer | The quantity to purchase | - | - | - |
+
+> Examples of payload _(generated)_
+
+```json
+{
+  "name": "string",
+  "quantity": 0
+}
+```
+
+
+#### Message `target`
+
+*Target an entity*
+
+##### Payload
+
+| Name | Type | Description | Value | Constraints | Notes |
+|---|---|---|---|---|---|
+| (root) | object | - | - | - | **additional properties are allowed** |
+| id | string | A valid entity id | - | - | - |
+| xid | string | The id of the player performing the target | - | - | - |
+
+> Examples of payload _(generated)_
+
+```json
+{
+  "id": "string",
+  "xid": "string"
+}
+```
+
+
+#### Message `lostandfound_info`
+
+*Lost and found (goblin) operations. Provide no payload to request lostandfound items*
+
+##### Payload
+
+| Name | Type | Description | Value | Constraints | Notes |
+|---|---|---|---|---|---|
+| (root) | string | - | allowed (`"info"`) | - | - |
+
+> Examples of payload _(generated)_
+
+```json
+"info"
+```
+
+
+#### Message `sbuy`
+
+*Second hand buy an item*
+
+##### Payload
+
+| Name | Type | Description | Value | Constraints | Notes |
+|---|---|---|---|---|---|
+| (root) | object | - | - | - | **additional properties are allowed** |
+| rid | string | The unique identifier of teh item | - | - | - |
+| f | boolean | - | - | - | - |
+
+> Examples of payload _(generated)_
+
+```json
+{
+  "rid": "string",
+  "f": true
+}
+```
+
+
+#### Message `loaded`
+
+*An event sent when the client has finished loading*
+
+##### Payload
+
+| Name | Type | Description | Value | Constraints | Notes |
+|---|---|---|---|---|---|
+| (root) | object | - | - | - | **additional properties are allowed** |
+| success | integer | - | allowed (`0`, `1`) | - | - |
+| width | integer | The resolution width | - | - | - |
+| height | integer | The resolution height | - | - | - |
+| scale | integer | The game scale | - | - | - |
+
+> Examples of payload _(generated)_
+
+```json
+{
+  "success": 0,
+  "width": 0,
+  "height": 0,
+  "scale": 0
+}
+```
+
+
+#### Message `auth`
+
+*An event sent to authenticate the game session*
+
+##### Payload
+
+| Name | Type | Description | Value | Constraints | Notes |
+|---|---|---|---|---|---|
+| (root) | object | - | - | - | **additional properties are allowed** |
+| auth | string | The auth secret | - | - | - |
+| character | string | The unique character game ID | - | - | - |
+| code_slot | string | The unique code_slot game ID | - | - | - |
+
+> Examples of payload _(generated)_
+
+```json
+{
+  "auth": "string",
+  "character": "string",
+  "code_slot": "string"
+}
+```
+
+
 
 ### SUB `/` Operation
 
@@ -432,14 +714,14 @@ Example of a standard welcome message
 
 #### Message `ping_ack`
 
-*A ping acknowledgement from the server*
+*A ping acknowledgement from the server, triggered from `ping_trig`*
 
 ##### Payload
 
 | Name | Type | Description | Value | Constraints | Notes |
 |---|---|---|---|---|---|
 | (root) | object | - | - | - | **additional properties are allowed** |
-| id | string | - | - | - | - |
+| id | string | A unique identifier for the ping specified in the `ping_trig` request | - | - | - |
 
 > Examples of payload
 
@@ -772,6 +1054,265 @@ Example of a standard death event
   "x": 0,
   "y": 0
 }
+```
+
+
+#### Message `start`
+
+*An inital message upon character login containing player data*
+
+##### Payload
+
+| Name | Type | Description | Value | Constraints | Notes |
+|---|---|---|---|---|---|
+| (root) | object | A standard player object | - | - | **additional properties are allowed** |
+| afk | string | Control method of the player | allowed (`"code"`, `"manual"`) | - | - |
+| age | integer | Age in days of player | - | - | - |
+| angle | number | Angle of the player | - | - | - |
+| armor | integer | The players armour score | - | - | - |
+| attack | integer | the players attack score | - | - | - |
+| c | object | An object containing abilities the player is channeling | - | - | **additional properties are allowed** |
+| cid | integer | - | - | - | - |
+| controller | string | - | - | - | - |
+| ctype | string | The players class type | allowed (`"mage"`, `"warrior"`, `"priest"`, `"rogue"`, `"paladin"`, `"archer"`, `"merchant"`) | - | - |
+| cx | object | An object containing the player applied customisations | - | - | **additional properties are allowed** |
+| focus | integer | The focus target ID of the player | - | - | - |
+| frequency | integer | The players frequency score | - | - | - |
+| hp | integer | The players current Health Points | - | - | - |
+| id | string | The players id (Doubles as the player name) | - | - | - |
+| level | integer | The players current level | - | - | - |
+| max_hp | integer | The players maximum Health Points | - | - | - |
+| max_mp | integer | The players maximum Mana Points | - | - | - |
+| mp | integer | The players current Mana Points | - | - | - |
+| owner | string | The owner ID of this player | - | - | - |
+| party | string | The player ID of the players party leader | - | - | - |
+| pdps | number | The players DPS share whilst in the players current party | - | - | - |
+| q | object | - | - | - | **additional properties are allowed** |
+| q.compound | object | - | - | - | **additional properties are allowed** |
+| q.compound.len | number | - | - | - | - |
+| q.compound.ms | number | - | - | - | - |
+| q.compound.num | number | - | - | - | - |
+| q.compound.nums | array<number> | - | - | - | - |
+| q.compound.nums (single item) | number | - | - | - | - |
+| q.upgrade | object | - | - | - | **additional properties are allowed** |
+| q.upgrade.len | number | - | - | - | - |
+| q.upgrade.ms | number | - | - | - | - |
+| q.upgrade.num | number | - | - | - | - |
+| q.exchange | object | - | - | - | **additional properties are allowed** |
+| q.exchange.len | number | - | - | - | - |
+| q.exchange.ms | number | - | - | - | - |
+| range | integer | The players attack range | - | - | - |
+| resistance | integer | The players resistance score | - | - | - |
+| rip | boolean | Denotes whether the character is currently dead | - | - | - |
+| s | object anyOf | An object containing the players applied effects | - | - | **additional properties are allowed** |
+| s.0 (anyOf item) | object | - | - | - | **additional properties are allowed** |
+| s.0.ms | number | The time in milliseconds remaining of the buff | - | - | - |
+| s.0.f | string | The player ID who applied the buff | - | - | - |
+| s.0.strong | boolean | Denotes whether this buff is `strong` meaning it cannot be replaced with an identical buff from another player | - | - | - |
+| skin | string | The ID of the skin applied to the player | - | - | - |
+| slots | object | All currently equipped items on the player | - | - | **additional properties are allowed** |
+| slots.itemName | object | A standard item object | - | - | **additional properties are allowed** |
+| slots.itemName.name | string | - | - | - | - |
+| slots.itemName.level | integer | - | - | - | - |
+| slots.itemName.stat_type | string | The current stat type applied to the item from a scroll | allowed (`"int"`, `"str"`, `"dex"`, `"vit"`) | - | - |
+| slots.itemName.acc | integer | The items achievement progress | - | - | - |
+| slots.itemName.ach | string | The items applied achievement name | - | - | - |
+| slots.itemName.expires | string | A timestamp that when reached, the item will be deleted | - | - | - |
+| slots.itemName.gf | string | The character that gifted the item to the player | - | - | - |
+| slots.itemName.grace | integer | An integer that denotes how likely a player is to success when attempting to upgrade or compound the item. A higher number means a higher change to succeed | - | - | - |
+| slots.itemName.l | string | Denotes whether the item is (l)ocked, (s)ealed or (u)nlocking | allowed (`"l"`, `"s"`, `"u"`) | - | - |
+| slots.itemName.ps | array<string> | An array of applicable titles for this item | - | - | - |
+| slots.itemName.ps (single item) | string | - | - | - | - |
+| speed | integer | The characters speed score | - | - | - |
+| target | string | The ID of the players current target | - | - | - |
+| x | number | The players x coordinate | - | - | - |
+| xp | integer | The players accumulated xp at the current level | - | - | - |
+| y | number | The players y coordinate | - | - | - |
+
+> Examples of payload _(generated)_
+
+```json
+{
+  "afk": "code",
+  "age": 0,
+  "angle": 0,
+  "armor": 0,
+  "attack": 0,
+  "c": {},
+  "cid": 0,
+  "controller": "string",
+  "ctype": "mage",
+  "cx": {},
+  "focus": 0,
+  "frequency": 0,
+  "hp": 0,
+  "id": "string",
+  "level": 0,
+  "max_hp": 0,
+  "max_mp": 0,
+  "mp": 0,
+  "owner": "string",
+  "party": "string",
+  "pdps": 0,
+  "q": {
+    "compound": {
+      "len": 0,
+      "ms": 0,
+      "num": 0,
+      "nums": [
+        0
+      ]
+    },
+    "upgrade": {
+      "len": 0,
+      "ms": 0,
+      "num": 0
+    },
+    "exchange": {
+      "len": 0,
+      "ms": 0
+    }
+  },
+  "range": 0,
+  "resistance": 0,
+  "rip": true,
+  "s": {
+    "ms": 0,
+    "f": "string",
+    "strong": true
+  },
+  "skin": "string",
+  "slots": {
+    "itemName": {
+      "name": "string",
+      "level": 0,
+      "stat_type": "int",
+      "acc": 0,
+      "ach": "string",
+      "expires": "string",
+      "gf": "string",
+      "grace": 0,
+      "l": "l",
+      "ps": [
+        "string"
+      ]
+    }
+  },
+  "speed": 0,
+  "target": "string",
+  "x": 0,
+  "xp": 0,
+  "y": 0
+}
+```
+
+
+#### Message `upgrade`
+
+*Upgrade result message*
+
+##### Payload
+
+| Name | Type | Description | Value | Constraints | Notes |
+|---|---|---|---|---|---|
+| (root) | object | - | - | - | **additional properties are allowed** |
+| type | string | - | allowed (`"upgrade"`, `"exchange"`) | - | - |
+| success | integer | - | allowed (`0`, `1`) | - | - |
+
+> Examples of payload _(generated)_
+
+```json
+{
+  "type": "upgrade",
+  "success": 0
+}
+```
+
+
+#### Message `ui`
+
+*UI text*
+
+##### Payload
+
+| Name | Type | Description | Value | Constraints | Notes |
+|---|---|---|---|---|---|
+| (root) | oneOf | - | - | - | **additional properties are allowed** |
+| 0 (oneOf item) | object | Sent when something is purchased or sold to a vendor | - | - | **additional properties are allowed** |
+| type | string | - | const (`"+$"`) | - | - |
+| id | string | The ID of the player or entity triggering the UI text | - | - | - |
+| name | string | The id of the player that triggered the UI Text | - | - | - |
+| item | object | - | - | - | **additional properties are allowed** |
+| item.name | string | The item name | - | - | - |
+| item.q | integer | The quantity of the item | - | - | - |
+| 1 (oneOf item) | object | Sent when a player is mlucked | - | - | **additional properties are allowed** |
+| 1.from | string | The player ID of the player casting mluck | - | - | - |
+| 1.to | string | The payer ID of the player targeted by the mluck cast | - | - | - |
+| 2 (oneOf item) | object | Sent when gold is sent to a player | - | - | **additional properties are allowed** |
+| 2.type | string | - | const (`"gold_sent"`) | - | - |
+| 2.receiver | string | The player ID of the player receiving the gold | - | - | - |
+| 2.sender | string | The player ID of the player sending the gold | - | - | - |
+| 2.gold | string | The amount of gold transferred | - | - | - |
+
+> Examples of payload _(generated)_
+
+```json
+{
+  "type": "+$",
+  "id": "string",
+  "name": "string",
+  "item": {
+    "name": "string",
+    "q": 0
+  }
+}
+```
+
+
+#### Message `lostandfound`
+
+*An event containing lostandfound items after being requested*
+
+##### Payload
+
+| Name | Type | Description | Value | Constraints | Notes |
+|---|---|---|---|---|---|
+| (root) | array<object> | - | - | - | - |
+| rid | string | The unique identifier of the item | - | - | - |
+| name | string | The item name | - | - | - |
+| level | integer | The items level | - | - | - |
+
+> Examples of payload _(generated)_
+
+```json
+[
+  {
+    "rid": "string",
+    "name": "string",
+    "level": 0
+  }
+]
+```
+
+
+#### Message `game_response`
+
+*Responses to actions performed within the game*
+
+##### Payload
+
+| Name | Type | Description | Value | Constraints | Notes |
+|---|---|---|---|---|---|
+| (root) | oneOf | - | - | - | **additional properties are allowed** |
+| 0 (oneOf item) | string | A resonse returned when lostandfound is requested, but the required donation has not been provided | const (`"lostandfound_donate"`) | - | - |
+| 1 (oneOf item) | object | A response returned when lostandfound info is requested | - | - | **additional properties are allowed** |
+| 1.response | string | - | const (`"lostandfound_info"`) | - | - |
+| 1.gold | number | The amount of gold lostandfound has | - | - | - |
+
+> Examples of payload _(generated)_
+
+```json
+"lostandfound_donate"
 ```
 
 
