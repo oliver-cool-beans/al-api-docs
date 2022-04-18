@@ -1023,21 +1023,17 @@ components:
           type: string
           description: The payer ID of the player targeted by the mluck cast
     game_response_lostandfound_donate:
-      type: object
+      type: string
       description: A resonse returned when lostandfound is requested, but the required donation has not been provided
-      payload:
-        type: string
-        const: lostandfound_donate
+      const: lostandfound_donate
     game_response_lostandfound_info:
       type: object
       description: A response returned when lostandfound info is requested
-      payload:
-        type: object
-        properties:
-          response:
-            type: string
-            const: lostandfound_info
-          gold:
-            type: number
-            description: The amount of gold lostandfound has
-            #TODO Fact check this?
+      properties:
+        response:
+          type: string
+          const: lostandfound_info
+        gold:
+          type: number
+          description: The amount of gold lostandfound has
+          #TODO Fact check this?
