@@ -369,6 +369,30 @@ Accepts **one of** the following messages:
 ```
 
 
+#### Message `craft`
+
+*Craft an item*
+
+##### Payload
+
+| Name | Type | Description | Value | Constraints | Notes |
+|---|---|---|---|---|---|
+| (root) | object | - | - | - | **additional properties are allowed** |
+| items | array<number> | first number in the array is the player backpack slot, and the second number being the crafting slot | - | >= 2 items | - |
+| items (single item) | number | - | - | - | - |
+
+> Examples of payload _(generated)_
+
+```json
+{
+  "items": [
+    0,
+    0
+  ]
+}
+```
+
+
 
 ### SUB `/` Operation
 
@@ -1308,6 +1332,9 @@ Example of a standard death event
 | 1 (oneOf item) | object | A response returned when lostandfound info is requested | - | - | **additional properties are allowed** |
 | 1.response | string | - | const (`"lostandfound_info"`) | - | - |
 | 1.gold | number | The amount of gold lostandfound has | - | - | - |
+| 2 (oneOf item) | object | A response returned when an item is crafted by the player | - | - | **additional properties are allowed** |
+| 2.response | string | - | const (`"craft"`) | - | - |
+| 2.name | string | The item that has been crafted | - | - | - |
 
 > Examples of payload _(generated)_
 
