@@ -96,6 +96,8 @@ channels:
           - $ref: '#/components/messages/sbuy'
           - $ref: '#/components/messages/loaded'
           - $ref: '#/components/messages/auth'
+          - $ref: '#/components/messages/craft'
+
 
 
 #
@@ -103,6 +105,19 @@ channels:
 #
 components:
   messages:
+    craft: 
+      name: craft
+      summary: Craft an item
+      payload:
+        type: object
+        properties: 
+          items:
+            description: first number in the array is the player backpack slot, and the second number being the crafting slot
+            type: array
+            minItems: 2
+            items:
+              type: number
+            
     game_response:
       name: game_response
       summary: Responses to actions performed within the game
@@ -110,6 +125,7 @@ components:
         oneOf:
           - $ref: '#/components/schemas/game_response_lostandfound_donate'
           - $ref: '#/components/schemas/game_response_lostandfound_info'
+          - $ref: '#/components/schemas/game_response_craft'
           #TODO Add more game responses!
     loaded:
       name: loaded
@@ -1037,3 +1053,13 @@ components:
           type: number
           description: The amount of gold lostandfound has
           #TODO Fact check this?
+    game_response_craft:
+      type: object
+      description: A response returned when an item is crafted by the player
+      properties:
+        response:
+          type: string
+          const: craft
+        name:
+          type: string
+          description: The item that has been crafted
