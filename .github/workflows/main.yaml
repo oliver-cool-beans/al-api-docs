@@ -46,7 +46,7 @@ jobs:
         name: 'VERSION'
         value: ${{ steps.bump_version.outputs.next-version }}
         repository: ${{ github.repository }}
-        token: ${{ secrets.GITHUB_TOKEN }}
+        token: ${{ secrets.REPO_ACCESS_TOKEN }}
 
     #Deploy to GH Pages
     - name: Deploy GH page
