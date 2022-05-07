@@ -24,7 +24,6 @@ jobs:
       with:
         template: '@asyncapi/html-template@0.24.9'  #In case of template from npm, because of @ it must be in quotes
         filepath: /home/runner/work/al-api-docs/al-api-docs/asyncapi.yaml
-        parameters: sidebarOrganization=byTags #space separated list of key/values
         output: docs
               
     #Using another action that takes generated HTML and pushes it to GH Pages
