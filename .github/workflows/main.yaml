@@ -17,37 +17,32 @@ jobs:
       uses: WaleedAshraf/asyncapi-github-action@v0.0.6
       with:
         filepath: asyncapi.yaml
-        
-    # Get next version
-    - name: Bump release version
-      id: bump_version
-      uses: christian-draeger/increment-semantic-version@1.0.2
+
+    - name: Tag and prepare release
+      id: tag_and_prepare_release
+      uses: K-Phoen/semver-release-action@master
       with:
-        current-version: ${{ secrets.VERSION || '1.0.0' }}
-        version-fragment: 'feature'
+        release_branch: master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Do something with your bumped release version
-      run: echo ${{ steps.bump_version.outputs.next-version }}
-      # will print 2.12.0
-
+    - name: Upload release notes
+      if: steps.tag_and_prepare_release.outputs.tag
+      uses: Roang-zero1/github-create-release-action@master
+      with:
+        created_tag: ${{ steps.tag_and_prepare_release.outputs.tag }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        
     # Generate the HTML for github pages
     - name: Generating HTML from my AsyncAPI document
       uses: docker://asyncapi/github-action-for-generator:2.0.3
       with:
         template: '@asyncapi/html-template@0.24.9'  #In case of template from npm, because of @ it must be in quotes
         filepath: /home/runner/work/al-api-docs/al-api-docs/asyncapi.yaml
-        parameters: version=${{ steps.bump_version.outputs.next-version }}
+        parameters: version=${{ steps.tag_and_prepare_release.outputs.tag  }}
         output: docs
     
-    #Update the VERSION github secret
-    - name: Update VERSION
-      uses: hmanzur/actions-set-secret@v2.0.0
-      with:
-        name: 'VERSION'
-        value: ${{ steps.bump_version.outputs.next-version }}
-        repository: ${{ github.repository }}
-        token: ${{ secrets.REPO_ACCESS_TOKEN }}
-
     #Deploy to GH Pages
     - name: Deploy GH page
       uses: JamesIves/github-pages-deploy-action@3.4.2
