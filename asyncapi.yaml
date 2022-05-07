@@ -1,21 +1,11 @@
 asyncapi: '2.2.0'
 
 info:
-  title: Adventure Land - The Code MMORPG
+  title: Adventure Land
   version: "1.0"
   contact:
     name: Adventure Land
     url: http://www.adventure.land/
-  description: |
-    Unofficial Documentation for Adventure Land
-    
-    Want to contribute? Check out the [Github](https://github.com/oliver-cool-beans/al-api-docs)
-
-    You can quickly play with the API using [wscat](https://github.com/websockets/wscat) like this:
-    ```bash
-    wscat -c "wss://eud1.adventure.land:8443/socket.io/?EIO=4&transport=websocket"
-    ```
-
     
 #
 # Link to external docs
