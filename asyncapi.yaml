@@ -1,7 +1,7 @@
 asyncapi: '2.2.0'
 
 info:
-  title: Adventure Land
+  title: Adventure Land API Reference
   version: "1.0"
   contact:
     name: Adventure Land
@@ -56,6 +56,7 @@ channels:
           - $ref: '#/components/messages/action'
           - $ref: '#/components/messages/sid'
           - $ref: '#/components/messages/hit'
+          - $ref: '#/components/messages/target_hit'
           - $ref: '#/components/messages/ping_ack'
           - $ref: '#/components/messages/death'
           - $ref: '#/components/messages/server_info'
@@ -63,10 +64,19 @@ channels:
           - $ref: '#/components/messages/disappearing_text'
           - $ref: '#/components/messages/new_map'
           - $ref: '#/components/messages/start'
-          - $ref: '#/components/messages/upgrade'
+          - $ref: '#/components/messages/upgrade_event'
           - $ref: '#/components/messages/ui'
           - $ref: '#/components/messages/lostandfound'
           - $ref: '#/components/messages/game_response'
+          - $ref: '#/components/messages/level_up'
+          - $ref: '#/components/messages/buy_event'
+          - $ref: '#/components/messages/incoming'
+          - $ref: '#/components/messages/death'
+          - $ref: '#/components/messages/mobbing'
+          - $ref: '#/components/messages/stacked'
+          - $ref: '#/components/messages/cm'
+          - $ref: '#/components/messages/event'
+          - $ref: '#/components/messages/shutdown'
 
 
     publish:
@@ -87,6 +97,8 @@ channels:
           - $ref: '#/components/messages/loaded'
           - $ref: '#/components/messages/auth'
           - $ref: '#/components/messages/craft'
+          - $ref: '#/components/messages/bet'
+          - $ref: '#/components/messages/emotion'
 
 
 
@@ -95,6 +107,117 @@ channels:
 #
 components:
   messages:
+    shutdown:
+      name: shutdown
+      summary: Server shutdown event for current server
+      payload:
+        type: object
+        properties:
+          seconds:
+            type: integer
+            description: Seconds remaining until server shutdown
+      tags:
+        -
+          name: server
+    event:
+      name: event
+      summary: A game event
+      payload:
+        type: object
+        allOf:
+          - $ref: "#/components/schemas/game_event"
+          - $ref: "#/components/schemas/coordinates"
+        additionalProperties: false
+      tags:
+        -
+          name: server
+    cm:
+      name: cm
+      summary: Emitted when a character received a code message
+      payload:
+        type: object
+        properties:
+          name:
+            type: string
+            description: The name of the character that sent the message
+            message:
+              type: string
+      tags:
+        -
+          name: character
+    stacked:
+      name: stacked
+      summary: Emitted when characters are on top of eachother. Monsters deal stacked/increasing damage to all stacked characters
+      payload:
+        type: object
+        properties:
+          ids:
+            type: array
+            items:
+              type: string
+              description: An array of character ID's
+      tags:
+        -
+          name: character
+    mobbing:
+      name: mobbing
+      summary: Emitted when 4+ monsters are targeted they start dealing increased damage
+      payload:
+        type: object
+        properties:
+          intensity:
+            type: integer
+            description: The intesity that ecreases with each hit
+      tags:
+        -
+          name: character
+    incoming:
+      name: incoming
+      summary: If an "action" game event is targeting you
+      payload:
+        type: object
+        properties:
+          source: 
+            const: attack
+          actor:
+            type: string
+            description: Monster ID or Character ID of the origin of the event
+          target:
+            type: string
+            description: Monster ID or Character ID of the events target
+          damage:
+            type: integer
+            description: The damage done by the event
+          projectile:
+            $ref: "#/components/schemas/projectiles"  
+          eta:
+            type: integer
+            description: Arrival in milliseconds
+          pid:
+            type: string
+            description: The projectile ID
+      tags:
+        -
+          name: character
+    level_up:
+      name: level_up
+      summary: Emitted on character levelup
+      payload:
+        type: object
+        properties:
+          level: 
+            type: integer
+      tags:
+        -
+          name: character
+    emotion:
+      name: emotion
+      summary: Use an emotion you have unlocked
+      payload:
+        type: object
+        properties:
+          name:
+            $ref: "#/components/schemas/emotions"
     craft: 
       name: craft
       summary: Craft an item
@@ -107,6 +230,7 @@ components:
             minItems: 2
             items:
               type: number
+        additionalProperties: false
             
     game_response:
       name: game_response
@@ -137,6 +261,7 @@ components:
           scale:
             type: integer
             description: The game scale
+        additionalProperties: false
     auth:
       name: auth
       summary: An event sent to authenticate the game session
@@ -152,6 +277,7 @@ components:
           code_slot:
             type: string
             description: The unique code_slot game ID
+        additionalProperties: false
         height: 
           type: string
           description: The resolution height
@@ -172,19 +298,19 @@ components:
         width:
           type: string
           description: The resolution width
-        
     sbuy:
       name: sbuy
-      summary: Second hand buy an item
+      summary: Second hand buy an item (Ponty)
       payload:
         type: object
         properties:
           rid: 
             type: string
-            description: The unique identifier of teh item
+            description: The unique identifier of the item
           f:
             type: boolean
             #TODO What is this?
+        additionalProperties: false
     donate:
       name: donate
       summary: Donate to the lost and found goblin
@@ -194,6 +320,7 @@ components:
           gold:
             type: integer
             description: The amount of gold to donate
+        additionalProperties: false
     lostandfound:
       name: lostandfound
       summary: An event containing lostandfound items after being requested
@@ -212,6 +339,7 @@ components:
               type: integer
               description: The items level
               optional: true
+          additionalProperties: false
     lostandfound_info:
       name: lostandfound_info
       summary: Lost and found (goblin) operations. Provide no payload to request lostandfound items
@@ -240,6 +368,7 @@ components:
           xid:
             type: string
             description: The id of the player performing the target
+        additionalProperties: false
     buy:
       name: buy
       summary: Purchase an item
@@ -247,18 +376,25 @@ components:
         type: object
         properties:
           name:
-            type: string
-            description: A valid item name
+            $ref: "#/components/schemas/item_names"
           quantity:
             type: integer
             description: The quantity to purchase
-
+        additionalProperties: false
+    buy_event:
+      name: buy
+      summary: Emitted when a buy is made
+      payload:
+        $ref: "#/components/schemas/buy"
+      tags:
+        -
+          name: area
     bank:
       name: bank
       summary: Perform operations at the bank
       payload:
         $ref: '#/components/schemas/bank'
-    upgrade:
+    upgrade_event:
       name: upgrade
       summary: Upgrade result message
       payload:
@@ -274,7 +410,10 @@ components:
             enum:
               - 0
               - 1
-
+        additionalProperties: false
+      tags:
+        -
+          name: area
     move:
       name: move
       summary: Move the player to coordinates
@@ -289,6 +428,7 @@ components:
           afk: 
             type: boolean
             # TODO Are there more properties you can set?
+        additionalProperties: false
     transport:
       name: transport
       summary: Request a transport to another map
@@ -300,6 +440,7 @@ components:
           s:
             type: integer
             #TODO What is this?
+        additionalProperties: false
 
     ping_trig:
       name: ping_trig
@@ -310,6 +451,7 @@ components:
           id:
             type: string
             description: A unique identifier used to identify the ping event.
+        additionalProperties: false
     exchange_buy:
       name: exchange_buy
       summary: Purchase an item using exchangeable items
@@ -325,6 +467,7 @@ components:
           q:
             type: integer
             description: The quantity being purchased
+        additionalProperties: false
     start:
       name: start
       summary: An inital message upon character login containing player data
@@ -365,7 +508,7 @@ components:
       summary: An action by a character in the rendered area
       tags:
         -
-          name: public
+          name: area
       payload:
         type: object
         $ref: '#/components/schemas/action'
@@ -390,12 +533,54 @@ components:
             type: array
             #TODO description
             #TODO items
+        additionalProperties: false
+    loot:
+      name: loot
+      summary: Emitted when you or a party member opens a chest
+      payload:
+        type: object
+        properties:
+          id: 
+            type: string
+            description: The ID of the loot event
+          opener: 
+            type: string
+            description: The character ID who opened the chest
+          goldm:
+            type: number
+            description: Gold multiplyer for the opening character
+          dry:
+            type: boolean
+            description: Set if the opener was far away from the chest
+          stale:
+            type: boolean
+            description: Set if the chest was unopened for more than 30 minutes
+          gold:
+            type: integer
+            description: The gold obtained from the chest
+          party:
+            type: boolean
+            description: The chest was looted by a party
+          items:
+            type: array
+            items:
+              $ref: "#/components/schemas/loot_item"
     hit:
       name: hit
       summary: An event containing data when an entity is hit
       tags:
         -
           name: public
+      payload:
+        type: object
+        $ref: '#/components/schemas/hit'
+      #TODO add example 
+    target_hit:
+      name: hit
+      summary: An event containing data when your character has hit someone
+      tags:
+        -
+          name: area
       payload:
         type: object
         $ref: '#/components/schemas/hit'
@@ -409,6 +594,7 @@ components:
           id: 
             type: string
             description: A unique identifier for the ping specified in the `ping_trig` request
+        additionalProperties: false
       examples:
         - name: ping_ack
           summary: Example of a standard ping_ack
@@ -424,12 +610,16 @@ components:
           id: 
             type: string
             description: The ID of the entity that died
+        additionalProperties: false
       examples:
         - name: death
           summary: Example of a standard death event
           payload: 
               type: object
               id: "7250984"
+      tags:
+        -
+          name: area          
     server_info:
         name: server_info
         summary: Information about available events on the server
@@ -443,6 +633,9 @@ components:
               patternProperties:
                 "^S_":
                   type: boolean
+        tags:
+          -
+            name: server
     disappear:
       name: disappear
       summary: A character has disappeared from the map
@@ -458,8 +651,23 @@ components:
       summary: An event that is sent when disappearing text appears above a character
       payload:
         $ref: '#/components/schemas/disappearing_text'
-    #TODO ui
-    #TODO disappearing_text
+    bet:
+      name: bet
+      summary: Place a bet at the gambline machine in the tavern
+      payload: 
+        type: object
+        properties:
+          type: 
+            $ref: "#/components/schemas/games"
+          dir:
+            description: Betting whether the number is above or below the specified `num`
+          num:
+            type: integer
+            description: The number to bet against
+          gold:
+            type: integer
+            description: The amount of gold to bet
+        additionalProperties: false
   schemas:
     welcome:
       type: object
@@ -481,21 +689,118 @@ components:
               type: integer
             y: 
               type: integer
+      additionalProperties: false
     mluck:
         type: object
         properties:
-          ms:
-            type: number
-            description: The time in milliseconds remaining of the buff
           f: 
             type: string
             description: The player ID who applied the buff
           strong:
             type: boolean
             description: Denotes whether this buff is `strong` meaning it cannot be replaced with an identical buff from another player
+    burned:
+        type: object
+        properties:
+          intensity: 
+            type: number
+            description: The damage that the burn will do per second
+            #TODO confirm this?
+          f:
+            type: boolean
+            description: The player ID who applied the burn
+    coop:
+      type: object
+      properties:
+        id: 
+          type: string
+        p:
+          type: number
+        #TODO add descriptions
+    monsterhunt:
+      type: object
+      properties:
+        sn:
+          type: string
+          description: The server ID where the monster hunt is valid
+        c:
+          type: integer
+          description: The remaining monsters to kill
+          id:
+            $ref: "#/components/schemas/monster_names"
+    citizen0aura:
+      type: object
+      properties:
+        gold: 
+          type: number
+    citizen4aura:
+      type: object
+      properties:
+        gold:
+          type: number
+    cursed:
+      type: object
+      properties:
+        ms:
+          type: number
+          description: The duration remaining of the curse
     maps:
       type: string
       description: A valid game map
+      enum: [
+        "winterland",
+        "d_b1",
+        "winter_inn",
+        "mansion",
+        "d2",
+        "batcave",
+        "winter_instance",
+        "resort",
+        "d_a2",
+        "main",
+        "resort_e",
+        "dungeon0",
+        "cgallery",
+        "hut",
+        "d_a1",
+        "bank",
+        "tavern",
+        "ship0",
+        "tunnel",
+        "level2e",
+        "d_g",
+        "d_e",
+        "abtesting",
+        "halloween",
+        "old_bank",
+        "level1",
+        "level2",
+        "level3",
+        "level4",
+        "cyberland",
+        "old_main",
+        "crypt",
+        "cave",
+        "original_main",
+        "duelland",
+        "spookytown",
+        "test",
+        "bank_u",
+        "shellsisland",
+        "goobrawl",
+        "level2s",
+        "level2w",
+        "mtunnel",
+        "level2n",
+        "bank_b",
+        "winter_cave",
+        "arena",
+        "desertland",
+        "winter_inn_rooms",
+        "jail",
+        "tomb",
+        "woffice"
+      ]
     serverIdentifiers:
       type: string
       description: A valid server identifier
@@ -504,10 +809,6 @@ components:
       type: string
       description: A valid server name
       enum: ["ASIA", "US", "EU"]
-    statTypes:
-      type: string
-      enum: ["int", "str", "dex", "vit"]
-      #TODO add additional enum stat types
     item:
       type: object
       description: A standard item object
@@ -519,7 +820,7 @@ components:
         stat_type: 
           type: string
           description: The current stat type applied to the item from a scroll
-          $ref: '#/components/schemas/statTypes'
+          $ref: '#/components/schemas/stat_types'
           optional: true 
         acc: 
           type: integer
@@ -545,6 +846,7 @@ components:
           description: An array of applicable titles for this item
           items:
             type: string
+        additionalProperties: false
     player:
       type: object
       description: A standard player object
@@ -578,15 +880,7 @@ components:
           #TODO description
         ctype: 
           type: string
-          description: The players class type
-          enum: 
-            - mage
-            - warrior
-            - priest
-            - rogue
-            - paladin
-            - archer
-            - merchant
+          $ref: '#/components/schemas/class_types'
         cx: 
           type: object
           description: An object containing the player applied customisations
@@ -623,6 +917,7 @@ components:
         pdps: 
           type: number
           description: The players DPS share whilst in the players current party
+    
         q: 
           type: object
           properties: 
@@ -668,9 +963,7 @@ components:
         s:
           type: object
           description: An object containing the players applied effects
-          anyOf:
-            - $ref: '#/components/schemas/mluck'
-            #TODO add all effects
+          $ref: '#/components/schemas/s'
         skin: 
           type: string
           description: The ID of the skin applied to the player
@@ -696,6 +989,7 @@ components:
         y:
           type: number
           description: The players y coordinate
+      additionalProperties: false
     monster:
       type: object
       description: A standard monster object
@@ -717,36 +1011,35 @@ components:
         going_y:
           type: number
           description: The y coordinate on the monsters `map` the monster is currently moving to
-          id: 
+        id: 
             type: string
             description: The ID of the monster
-          move_num:
-            type: integer
-            #TODO description
-          moving: 
-            type: boolean
-            description: Denotes whether the the monster is moving
-          mp: 
-            type: integer
-            description: The monsters current mana points
-          resistance:
-            type: integer
-            description: The monsters current resistance score
-          s:
-            type: object
-            description: An object containing the monsters applied effects
-            anyOf:
-              - $ref: '#/components/schemas/mluck'
-              #TODO add all effects
-          Type:
-            type: string
-            description: The type of the monster
-          x:
-            type: number
-            description: The current X coordinate of the monster
-          y:
-            type: number
-            description: The current Y coordinate of the monster
+        move_num:
+          type: integer
+          #TODO description
+        moving: 
+          type: boolean
+          description: Denotes whether the the monster is moving
+        mp: 
+          type: integer
+          description: The monsters current mana points
+        resistance:
+          type: integer
+          description: The monsters current resistance score
+        s:
+          type: object
+          description: An object containing the monsters applied effects
+          $ref: '#/components/schemas/s'
+        Type:
+          type: string
+          description: The type of the monster
+        x:
+          type: number
+          description: The current X coordinate of the monster
+        y:
+          type: number
+          description: The current Y coordinate of the monster
+      additionalProperties: false
     entities:
       type: object
       description: All surrounding entities
@@ -768,6 +1061,7 @@ components:
         type:
           type: string
           enum: ["all", "xy"]
+      additionalProperties: false
     action:
       type: object
       description: A standard action
@@ -806,6 +1100,7 @@ components:
         y:
           type: number
           description: The origin Y coordinate of this action
+      additionalProperties: false
     hit:
       type: object
       description: A standard hit event
@@ -835,6 +1130,10 @@ components:
         source:
           type: string
           description: The source that triggered this hit
+      additionalProperties: false
+      tags:
+        -
+          name: area
     server_info:
       description: Information about all available events on the server
       properties:
@@ -859,6 +1158,7 @@ components:
         spawn:
           type: string
           description: The server time of the next event start time
+      additionalProperties: false
     disappear:
       type: object
       description: A character has disappeared
@@ -883,6 +1183,7 @@ components:
           enum: 
             - blink
           optional: true
+      additionalProperties: false
     new_map:
       type: object
       description: A new map has been loaded
@@ -912,6 +1213,7 @@ components:
         y:
           type: integer
           description: The new Y coordinate of the character
+      additionalProperties: false
     disappearing_text:
       type: object
       properties:
@@ -924,6 +1226,7 @@ components:
             s:
               type: string
               description: The disappearing text effect
+          additionalProperties: false
         id: 
           type: string
           description: The character the disappearing text is applied to
@@ -936,6 +1239,7 @@ components:
         y:
           type: number
           description: The Y coordinate the text appears at
+      additionalProperties: false
     move:
       type: object
       properties:
@@ -954,6 +1258,7 @@ components:
         m:
           type: integer
           #TODO What is this?
+      additionalProperties: false
     bank:
       type: object
       properties:
@@ -970,14 +1275,62 @@ components:
           description: The bank slot to swap
         pack:
           $ref: '#/components/schemas/bank_pack'
+      additionalProperties: false
     bank_pack:
       type: string
       description: A valid bank pack name
       enum:
+        - gold
         - items0
         - items1
+        - items10
+        - items11
+        - items12
+        - items13
+        - items14
+        - items15
+        - items16
+        - items17
+        - items18
+        - items19
         - items2
+        - items20
+        - items21
+        - items22
+        - items23
+        - items24
+        - items25
+        - items26
+        - items27
+        - items28
+        - items29
         - items3
+        - items30
+        - items31
+        - items32
+        - items33
+        - items34
+        - items35
+        - items36
+        - items37
+        - items38
+        - items39
+        - items4
+        - items40
+        - items41
+        - items42
+        - items43
+        - items44
+        - items45
+        - items46
+        - items47
+        - items5
+        - items6
+        - items7
+        - items8
+        - items9
+        - character
+
         # TODO More?
     ui_vendor:
       type: object
@@ -1002,6 +1355,7 @@ components:
             q:
               type: integer
               description: The quantity of the item
+      additionalProperties: false
     ui_gold_sent:
       type: object
       description: Sent when gold is sent to a player
@@ -1018,6 +1372,7 @@ components:
         gold:
           type: string
           description: The amount of gold transferred
+      additionalProperties: false
     ui_mluck:
       type: object
       description: Sent when a player is mlucked
@@ -1028,6 +1383,7 @@ components:
         to:
           type: string
           description: The payer ID of the player targeted by the mluck cast
+      additionalProperties: false
     game_response_lostandfound_donate:
       type: string
       description: A resonse returned when lostandfound is requested, but the required donation has not been provided
@@ -1043,6 +1399,7 @@ components:
           type: number
           description: The amount of gold lostandfound has
           #TODO Fact check this?
+      additionalProperties: false
     game_response_craft:
       type: object
       description: A response returned when an item is crafted by the player
@@ -1053,3 +1410,1145 @@ components:
         name:
           type: string
           description: The item that has been crafted
+      additionalProperties: false
+    class_types:
+      type: string
+      description: The players class type
+      enum: 
+        - mage
+        - warrior
+        - priest
+        - rogue
+        - paladin
+        - archer
+        - merchant
+    stat_types:
+      type: string
+      enum: 
+        - armor
+        - attack
+        - dex
+        - for
+        - frequency
+        - gold
+        - hp
+        - int
+        - lifesteal
+        - luck
+        - mp_cost
+        - range
+        - resistance
+        - speed
+        - str
+        - vit
+    weapon_types:
+      type: string
+      enum: 
+        - axe
+        - basher
+        - bow
+        - crossbow
+        - dagger
+        - dartgun
+        - fist
+        - mace
+        - pmace
+        - rapier
+        - short_sword
+        - spear
+        - staff
+        - stars
+        - sword
+        - wand
+        - wblade
+        - scythe
+    item_names:
+      type: string
+      description: The name of the item
+      enum:
+        - 5bucks
+        - ale
+        - amuletofm
+        - angelwings
+        - apiercingscroll
+        - apologybox
+        - armorbox
+        - armorring
+        - armorscroll
+        - ascale
+        - axe3
+        - bandages
+        - basher
+        - basketofeggs
+        - bataxe
+        - bcandle
+        - bcape
+        - beewings
+        - bfang
+        - bfur
+        - bkey
+        - blade
+        - blue
+        - bottleofxp
+        - bow
+        - bow4
+        - bowofthedead
+        - bronzeingot
+        - bronzenugget
+        - brownegg
+        - btusk
+        - bugbountybox
+        - bunnyears
+        - bunnyelixir
+        - bwing
+        - cake
+        - candy0
+        - candy0v2
+        - candy0v3
+        - candy1
+        - candy1v2
+        - candy1v3
+        - candycane
+        - candycanesword
+        - candypop
+        - cape
+        - carrot
+        - carrotsword
+        - cclaw
+        - cdarktristone
+        - cdragon
+        - charmer
+        - chrysalis0
+        - claw
+        - coal
+        - coat
+        - coat1
+        - cocoon
+        - computer
+        - confetti
+        - cosmo0
+        - cosmo1
+        - cosmo2
+        - cosmo3
+        - cosmo4
+        - crabclaw
+        - critscroll
+        - crossbow
+        - cscale
+        - cscroll0
+        - cscroll1
+        - cscroll2
+        - cscroll3
+        - cshell
+        - ctristone
+        - cupid
+        - cxjar
+        - dagger
+        - daggerofthedead
+        - darktristone
+        - dartgun
+        - dexamulet
+        - dexbelt
+        - dexearring
+        - dexring
+        - dexscroll
+        - dragondagger
+        - drapes
+        - dreturnscroll
+        - dstones
+        - ecape
+        - ectoplasm
+        - eears
+        - egg0
+        - egg1
+        - egg2
+        - egg3
+        - egg4
+        - egg5
+        - egg6
+        - egg7
+        - egg8
+        - eggnog
+        - electronics
+        - elixirdex0
+        - elixirdex1
+        - elixirdex2
+        - elixirint0
+        - elixirint1
+        - elixirint2
+        - elixirluck
+        - elixirstr0
+        - elixirstr1
+        - elixirstr2
+        - elixirvit0
+        - elixirvit1
+        - elixirvit2
+        - emptyheart
+        - emptyjar
+        - epyjamas
+        - eslippers
+        - espresso
+        - essenceofether
+        - essenceoffire
+        - essenceoffrost
+        - essenceoflife
+        - essenceofnature
+        - evasionscroll
+        - fcape
+        - fclaw
+        - feather0
+        - fieldgen0
+        - fierygloves
+        - figurine
+        - fireblade
+        - firebow
+        - firecrackers
+        - firestaff
+        - flute
+        - forscroll
+        - frankypants
+        - frequencyscroll
+        - frogt
+        - frostbow
+        - froststaff
+        - frozenstone
+        - fsword
+        - ftrinket
+        - funtoken
+        - fury
+        - gbow
+        - gem0
+        - gem1
+        - gem2
+        - gem3
+        - gemfragment
+        - ghatb
+        - ghatp
+        - gift0
+        - gift1
+        - glitch
+        - gloves
+        - gloves1
+        - goldbooster
+        - goldenegg
+        - goldenpowerglove
+        - goldingot
+        - goldnugget
+        - goldscroll
+        - gphelmet
+        - greenbomb
+        - gslime
+        - gum
+        - hammer
+        - handofmidas
+        - harbringer
+        - harmor
+        - hboots
+        - hbow
+        - heartwood
+        - helmet
+        - helmet1
+        - hgloves
+        - hhelmet
+        - hotchocolate
+        - hpamulet
+        - hpants
+        - hpbelt
+        - hpot0
+        - hpot1
+        - hpotx
+        - ijx
+        - ink
+        - intamulet
+        - intbelt
+        - intearring
+        - intring
+        - intscroll
+        - jacko
+        - jewellerybox
+        - kitty1
+        - lantern
+        - lbelt
+        - leather
+        - ledger
+        - licence
+        - lifestealscroll
+        - lostearring
+        - lotusf
+        - lspores
+        - luckbooster
+        - luckscroll
+        - luckyt
+        - mace
+        - maceofthedead
+        - mageshood
+        - manastealscroll
+        - mbones
+        - mcape
+        - mcarmor
+        - mcboots
+        - mcgloves
+        - mchat
+        - mcpants
+        - merry
+        - mistletoe
+        - mittens
+        - mmarmor
+        - mmgloves
+        - mmhat
+        - mmpants
+        - mmshoes
+        - molesteeth
+        - monsterbox
+        - monstertoken
+        - mparmor
+        - mpcostscroll
+        - mpgloves
+        - mphat
+        - mpot0
+        - mpot1
+        - mpotx
+        - mppants
+        - mpshoes
+        - mrarmor
+        - mrboots
+        - mrgloves
+        - mrhood
+        - mrnarmor
+        - mrnboots
+        - mrngloves
+        - mrnhat
+        - mrnpants
+        - mrpants
+        - mshield
+        - mushroomstaff
+        - mwarmor
+        - mwboots
+        - mwgloves
+        - mwhelmet
+        - mwpants
+        - mysterybox
+        - networkcard
+        - nheart
+        - offering
+        - offeringx
+        - oozingterror
+        - orbg
+        - orbofdex
+        - orbofint
+        - orbofsc
+        - orbofstr
+        - orbofvit
+        - ornament
+        - ornamentstaff
+        - outputscroll
+        - pants
+        - pants1
+        - partyhat
+        - phelmet
+        - pico
+        - pinkie
+        - placeholder
+        - placeholder_m
+        - platinumingot
+        - platinumnugget
+        - pleather
+        - pmace
+        - poison
+        - poker
+        - powerglove
+        - pstem
+        - pumpkinspice
+        - puppy1
+        - puppyer
+        - pvptoken
+        - pyjamas
+        - qubics
+        - quiver
+        - rabbitsfoot
+        - rapier
+        - rattail
+        - redenvelope
+        - redenvelopev2
+        - redenvelopev3
+        - rednose
+        - reflectionscroll
+        - resistancering
+        - resistancescroll
+        - rfangs
+        - rfur
+        - ringofluck
+        - ringsj
+        - rpiercingscroll
+        - santasbelt
+        - scroll0
+        - scroll1
+        - scroll2
+        - scroll3
+        - scroll4
+        - scythe
+        - seashell
+        - shadowstone
+        - shield
+        - shoes
+        - shoes1
+        - slimestaff
+        - smoke
+        - smush
+        - snakefang
+        - snakeoil
+        - snring
+        - solitaire
+        - spear
+        - spearofthedead
+        - speedscroll
+        - spidersilk
+        - spores
+        - sshield
+        - sstinger
+        - staff
+        - staff2
+        - staff3
+        - staff4
+        - staffofthedead
+        - stand0
+        - stand1
+        - starkillers
+        - stealthcape
+        - stick
+        - stinger
+        - stonekey
+        - stoneofgold
+        - stoneofluck
+        - stoneofxp
+        - storagebox
+        - stramulet
+        - strbelt
+        - strearring
+        - strring
+        - strscroll
+        - suckerpunch
+        - supermittens
+        - svenom
+        - swifty
+        - swirlipop
+        - sword
+        - swordofthedead
+        - t2bow
+        - t2dexamulet
+        - t2intamulet
+        - t2quiver
+        - t2stramulet
+        - t3bow
+        - talkingskull
+        - test
+        - test2
+        - test_orb
+        - throwingstars
+        - tracker
+        - trinkets
+        - tristone
+        - troll
+        - tshell
+        - tshirt0
+        - tshirt1
+        - tshirt2
+        - tshirt3
+        - tshirt4
+        - tshirt6
+        - tshirt7
+        - tshirt8
+        - tshirt88
+        - tshirt9
+        - ukey
+        - vblood
+        - vitearring
+        - vitring
+        - vitscroll
+        - wand
+        - warmscarf
+        - warpvest
+        - watercore
+        - wattire
+        - wbasher
+        - wblade
+        - wbook0
+        - wbook1
+        - wbreeches
+        - wcap
+        - weaponbox
+        - wgloves
+        - whiskey
+        - whiteegg
+        - wine
+        - wingedboots
+        - woodensword
+        - wshield
+        - wshoes
+        - x0
+        - x1
+        - x2
+        - x3
+        - x4
+        - x5
+        - x6
+        - x7
+        - x8
+        - xarmor
+        - xboots
+        - xbox
+        - xgloves
+        - xhelmet
+        - xmashat
+        - xmaspants
+        - xmasshoes
+        - xmassweater
+        - xpants
+        - xpbooster
+        - xpscroll
+        - xptome
+        - xshield
+        - xshot
+    item_types: 
+      type: string
+      description: The weapons type
+      enum: 
+        - activator
+        - amulet
+        - belt
+        - booster
+        - box
+        - cape
+        - chest
+        - chrysalis
+        - computer
+        - container
+        - cosmetics
+        - cscroll
+        - earring
+        - elixir
+        - flute
+        - gem
+        - gloves
+        - helmet
+        - jar
+        - key
+        - licence
+        - material
+        - misc
+        - misc_offhand
+        - offering
+        - orb
+        - pants
+        - petlicence
+        - placeholder
+        - pot
+        - pscroll
+        - qubics
+        - quest
+        - quiver
+        - ring
+        - shield
+        - shoes
+        - skill_item
+        - source
+        - spawner
+        - stand
+        - stone
+        - test
+        - throw
+        - token
+        - tome
+        - tracker
+        - uscroll
+        - weapon
+        - xp
+        - xscroll
+    slot_types:
+      type: string
+      description: The type of slot
+      enum:
+        - amulet
+        - belt
+        - cape
+        - chest
+        - earring1
+        - earring2
+        - elixir
+        - gloves
+        - helmet
+        - mainhand
+        - offhand
+        - orb
+        - pants
+        - ring1
+        - ring2
+        - shoes
+    trade_slot_types:
+      type: string
+      description: The trade slot type
+      enum:
+        - trade1
+        - trade2
+        - trade3
+        - trade4
+        - trade5
+        - trade6
+        - trade7
+        - trade8
+        - trade9
+        - trade10
+        - trade11
+        - trade12
+        - trade13
+        - trade14
+        - trade15
+        - trade16
+    condition_types:
+      type: string
+      description: The condition type
+      enum:
+        - authfail
+        - blink
+        - burned
+        - charging
+        - charmed
+        - dampened
+        - darkblessing
+        - easterluck
+        - eburn
+        - eheal
+        - energized
+        - fingered
+        - frozen
+        - fullguard
+        - hardshell
+        - healed
+        - holidayspirit
+        - invincible
+        - licenced
+        - marked
+        - mcourage
+        - mlifesteal
+        - mluck
+        - monsterhunt
+        - notverified
+        - phasedout
+        - poisoned
+        - poisonous
+        - power
+        - reflection
+        - rspeed
+        - shocked
+        - slowness
+        - stack
+        - stoned
+        - stunned
+        - sugarrush
+        - tangled
+        - warcry
+        - weakness
+        - withdrawal
+        - xpower
+        - xshotted- 
+    monster_names:
+      type: string
+      description: The monsters name
+      enum:
+        - arcticbee
+        - armadillo
+        - bat
+        - bbpompom
+        - bee
+        - bigbird
+        - bluefairy
+        - boar
+        - booboo
+        - cgoo
+        - chestm
+        - crab
+        - crabx
+        - croc
+        - d_wiz
+        - dknight2
+        - dragold
+        - eelemental
+        - ent
+        - felemental
+        - fireroamer
+        - franky
+        - frog
+        - fvampire
+        - ghost
+        - goblin
+        - goldenbat
+        - goo
+        - greenfairy
+        - greenjr
+        - grinch
+        - gscorpion
+        - hen
+        - iceroamer
+        - jr
+        - jrat
+        - kitty1
+        - kitty2
+        - kitty3
+        - kitty4
+        - ligerx
+        - mechagnome
+        - minimush
+        - mole
+        - mrgreen
+        - mrpumpkin
+        - mummy
+        - mvampire
+        - nelemental
+        - nerfedmummy
+        - oneeye
+        - osnake
+        - phoenix
+        - pinkgoblin
+        - pinkgoo
+        - plantoid
+        - poisio
+        - porcupine
+        - pppompom
+        - prat
+        - puppy1
+        - puppy2
+        - puppy3
+        - puppy4
+        - rat
+        - redfairy
+        - rooster
+        - rudolph
+        - scorpion
+        - skeletor
+        - snake
+        - snowman
+        - spider
+        - squig
+        - squigtoad
+        - stompy
+        - stoneworm
+        - target
+        - target_a500
+        - target_a750
+        - target_ar500red
+        - target_ar900
+        - target_r500
+        - target_r750
+        - tortoise
+        - wabbit
+        - welemental
+        - wolf
+        - wolfie
+        - xscorpion- 
+    npc_names:
+      type: string
+      description: The name of the NPC
+      enum:
+        - Ace
+        - Alia
+        - Angel
+        - Baron
+        - Bean
+        - Bobo
+        - Caroline
+        - Christie
+        - Christina
+        - Cole
+        - Crun
+        - Cue
+        - Daisy
+        - Divian
+        - Ernis
+        - Faith
+        - Fredric
+        - Gabriel
+        - Gabriella
+        - Gabrielle
+        - Garwyn
+        - Gn. Spence
+        - Green
+        - Grundur
+        - Guard
+        - Haila
+        - Jane
+        - Janet
+        - Jaqk
+        - Jayson
+        - Kane
+        - Kilgore
+        - Landon
+        - Ledia
+        - Leo
+        - Lidia
+        - Lilith
+        - Lucas
+        - Lucy
+        - Marven
+        - Mine Heathcliff
+        - Mr. Dworf
+        - Mr. Rich
+        - New Year Tree
+        - Pete
+        - Pink
+        - Ponty
+        - Princess
+        - Purple
+        - Reny
+        - Ron
+        - Rose
+        - Santa
+        - Scarf
+        - Smith
+        - Stewart
+        - Timmy
+        - Tricksy
+        - Tristian
+        - Twig
+        - Violet
+        - Warin
+        - Witch
+        - Wizard
+        - Wogue
+        - Wynifreed
+        - Wyr
+        - Xyn
+        - Z
+    npc_roles: 
+      type: string
+      description: The role of the NPC
+      enum:
+        - announcer
+        - blocker
+        - bouncer
+        - citizen
+        - companion
+        - compound
+        - craftsman
+        - cx
+        - daily_events
+        - exchange
+        - funtokens
+        - gold
+        - guard
+        - items
+        - jailer
+        - locksmith
+        - lostandfound
+        - lottery
+        - mcollector
+        - merchant
+        - monstertokens
+        - newupgrade
+        - newyear_tree
+        - petkeeper
+        - premium
+        - pvp_announcer
+        - pvptokens
+        - quest
+        - repeater
+        - resort
+        - santa
+        - secondhands
+        - shells
+        - ship
+        - shrine
+        - standmerchant
+        - tavern
+        - tease
+        - thesearch
+        - transport
+        - witch
+    npc_type:
+      type: string
+      description: The role of the NPC
+      enum:
+        - antip2w
+        - appearance
+        - armors
+        - basics
+        - bean
+        - beans
+        - bouncer
+        - citizen0
+        - citizen1
+        - citizen10
+        - citizen11
+        - citizen12
+        - citizen13
+        - citizen14
+        - citizen15
+        - citizen2
+        - citizen3
+        - citizen4
+        - citizen5
+        - citizen6
+        - citizen7
+        - citizen8
+        - citizen9
+        - compound
+        - craftsman
+        - exchange
+        - fancypots
+        - firstc
+        - fisherman
+        - funtokens
+        - gemmerchant
+        - goldnpc
+        - guard
+        - holo
+        - holo0
+        - holo1
+        - holo2
+        - holo3
+        - holo4
+        - holo5
+        - items0
+        - items1
+        - items2
+        - items3
+        - items4
+        - items5
+        - items6
+        - items7
+        - jailer
+        - leathermerchant
+        - lichteaser
+        - locksmith
+        - lostandfound
+        - lotterylady
+        - mcollector
+        - mistletoe
+        - monsterhunter
+        - newupgrade
+        - newyear_tree
+        - ornaments
+        - pete
+        - pots
+        - premium
+        - princess
+        - pvp
+        - pvpblocker
+        - pvptokens
+        - pwincess
+        - santa
+        - scrolls
+        - secondhands
+        - shellsguy
+        - ship
+        - shrine
+        - standmerchant
+        - tavern
+        - tbartender
+        - thief
+        - transporter
+        - wbartender
+        - weapons
+        - witch
+        - wizardrepeater
+        - wnpc
+    damage_types:
+      type: string
+      description: The damage type
+      enum: 
+        - magical
+        - physical
+    skills_warrior:
+          type: string
+          description: Valid warrior skills
+          enum: [
+           "taunt", 
+           "agitate", 
+           "warcry", 
+           "charge", 
+           "hardshell", 
+           "cleave", 
+           "stomp"
+          ]
+    skills_mage:
+          type: string
+          description: Valid mage skills
+          enum: [
+            "blink", 
+            "burst", 
+            "light", 
+            "magiport", 
+            "energize", 
+            "alchemy", 
+            "reflection", 
+            "entangle", 
+            "cburst"
+          ]
+    effect:
+      type: object
+      description: A basic effect
+      properties:
+        ms:
+          type: integer
+    effects:
+      type: object
+      description: An effect
+      anyOf:
+        - $ref: '#/components/schemas/mluck'
+        - $ref: '#/components/schemas/burned'
+        - $ref: '#/components/schemas/coop'
+        - $ref: '#/components/schemas/monsterhunt'
+        - $ref: '#/components/schemas/citizen0aura'
+        - $ref: '#/components/schemas/citizen4aura'
+        - $ref: '#/components/schemas/cursed'
+        #TODO add more effects
+    s: 
+      type: object
+      description: An effect
+      allOf:
+        - $ref: '#/components/schemas/effect'
+        - $ref: '#/components/schemas/effects'
+    set_types:
+      type: string
+      description: Item set types
+      enum:
+        - easter
+        - fury
+        - holidays
+        - legends
+        - mmage
+        - mmerchant
+        - mpriest
+        - mpx
+        - mranger
+        - mrogue
+        - mwarrior
+        - rugged
+        - swift
+        - tiger
+        - vampires
+        - wanderers
+        - wt3
+        - wt4
+    games:
+      type: string
+      description: Valid games
+      enum:
+        - dice
+        - slots
+        - tarot
+        - wheel
+    emotions:
+      type: string
+      description: Valid emotions
+      enum:
+        - drop_egg
+        - hearts_single
+    achievements:
+      type: string
+      description: Valid achievments
+      enum:
+        - 1000boss
+        - 100boss
+        - discoverlair
+        - festive
+        - firehazard
+        - gooped
+        - lucky
+        - monsterhunter
+        - reach40
+        - reach50
+        - reach60
+        - reach70
+        - reach80
+        - reach90
+        - stomped
+        - upgrade10
+    projectiles:
+      type: string
+      description: A valid projectile
+      enum:
+        - acid
+        - arrow
+        - bigmagic
+        - burst
+        - crossbowarrow
+        - cupid
+        - curse
+        - firearrow
+        - frostarow
+        - frostball
+        - garrow
+        - magic
+        - magic_divine
+        - magic_purple
+        - mmagic
+        - momentum
+        - pinky
+        - plight
+        - pmagic
+        - poisonarrow
+        - pouch
+        - snowball
+        - stone
+        - stone_k
+        - supershot
+        - wandy
+        - wmomentum
+    loot_item:
+      type: object
+      description: An item obtained while looting
+      properties:
+        name: 
+          $ref: "#/components/schemas/item_names"
+        level:
+          type: integer
+          description: The items level
+        looter:
+          type: string
+          description: The character ID of the looting character
+        lostandfound:
+          optional: true
+          description: If this item is lost
+          #TODO Further describe this
+        pvp_loot:
+          optional: true
+          description: Denotes whether the chest was a character drop at pvp
+    coordinates:
+      type: object
+      description: Game coordinates
+      properties:
+        map:
+          $ref: "#/components/schemas/maps"
+        x: 
+          type: integer
+        y:
+          type: integer
+    game_event:
+      type: object
+      description: A valid game event
+      properties:
+        name:
+          type: string
+          enum:
+            - pinkgoo
+            - wabbit
+            - franky
+            - dragold
+            - grinch
+            - snowman
+            - slenderman
+            - tiger
+    buy:
+      type: object
+      properties:
+        name:
+          $ref: "#/components/schemas/item_names"
+        num:
+          type: integer
+          description: The inventory slot the item was deposited in
+        q:
+          type: integer
+          description: The quantity purchased
+        cost:
+          type: integer
+          description: Cost of the purchase in gold
