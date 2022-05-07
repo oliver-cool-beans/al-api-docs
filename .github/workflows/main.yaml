@@ -27,7 +27,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: DEBUG
-    - run: echo ${{ steps.tag_and_prepare_release.outputs.tag }}
+      run: echo ${{ steps.tag_and_prepare_release.outputs.tag }}
     
     - name: Upload release notes
       if: steps.tag_and_prepare_release.outputs.tag
