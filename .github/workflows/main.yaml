@@ -26,6 +26,9 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+    - name: DEBUG
+    - run: echo ${{ steps.tag_and_prepare_release.outputs.tag }}
+    
     - name: Upload release notes
       if: steps.tag_and_prepare_release.outputs.tag
       uses: Roang-zero1/github-create-release-action@master
