@@ -39,7 +39,6 @@
 
 ### Built With
 
-* [Docsify](https://docsify.js.org)
 * [AsyncAPI](https://www.asyncapi.com/) 
 
 
@@ -50,8 +49,18 @@ These docs are dynamically generated from the asyncapi spec. To contribute to th
 
 1. Install [Docsify](https://docsify.js.org/#/quickstart)
 2. Install the [AsyncAPI Generator](https://github.com/asyncapi/generator) with `npm install -g @asyncapi/generator`
-3. In the root directory generate new markdown from the AsyncAPI spec with `ag asyncapi.yaml @asyncapi/markdown-template -o docs`
-4. run `docsify serve docs` to serve the docs, or manually serve the `index.html` your own way
-5. Navigate to the documentation webpage in your browser `http://localhost:3000`
+3. In the root directory generate new markdown from the AsyncAPI spec with ` ag asyncapi.yaml @asyncapi/html-template -o docs`
+4. Navigate to index.html in your browser
 
 *After making changes, you'll need to run step 3 again to regenerate the markdown*
+
+## Contributing
+
+1. Fork the repo
+2. Clone the project to your local machine
+3. Commit changes to your own branch
+4. Push your work to your fork
+5. Submit a Pull Request against `develop` and i'll review your changes
+
+NOTE: Be sure to merge the latest from "upstream" before making a pull request!
+
