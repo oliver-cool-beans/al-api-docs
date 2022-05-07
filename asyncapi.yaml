@@ -7,10 +7,10 @@ info:
     name: Adventure Land
     url: http://www.adventure.land/
   description: |
-  Notice something that's not quite right? 
+    <h3 style="font-weight:bold">Notice an issue? </h3>
 
-  You can [submit an issue](https://github.com/oliver-cool-beans/al-api-docs/issues) 
-  Or even better, you can [contribute](https://github.com/oliver-cool-beans/al-api-docs#contributing)
+    You can [submit an issue on github](https://github.com/oliver-cool-beans/al-api-docs/issues). 
+    or, you can [contribute](https://github.com/oliver-cool-beans/al-api-docs#contributing)
 
 #
 # Link to external docs
