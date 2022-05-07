@@ -41,20 +41,23 @@
 
 * [AsyncAPI](https://www.asyncapi.com/) 
 
+### Something not right?
+Feel free to raise an Issue or submit a PR
 
 <!-- GETTING STARTED -->
 ## Getting Started
 
 These docs are dynamically generated from the asyncapi spec. To contribute to this documentation, simply update the [asyncapi document](asyncapi.yaml)
 
-1. Install [Docsify](https://docsify.js.org/#/quickstart)
-2. Install the [AsyncAPI Generator](https://github.com/asyncapi/generator) with `npm install -g @asyncapi/generator`
-3. In the root directory generate new markdown from the AsyncAPI spec with ` ag asyncapi.yaml @asyncapi/html-template -o docs`
-4. Navigate to index.html in your browser
+1. Install the [AsyncAPI Generator](https://github.com/asyncapi/generator) with `npm install -g @asyncapi/generator`
+2. In the root directory generate new markdown from the AsyncAPI spec with ` ag asyncapi.yaml @asyncapi/html-template -o docs`
+3. Navigate to index.html in your browser
 
 *After making changes, you'll need to run step 3 again to regenerate the markdown*
 
 ## Contributing
+All contributions welcome 
+Please explain the reason for the change if not obvious.
 
 1. Fork the repo
 2. Clone the project to your local machine
